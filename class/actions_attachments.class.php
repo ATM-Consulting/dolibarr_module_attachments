@@ -101,6 +101,7 @@ class ActionsAttachments
                 {
                     // Documents
                     $linkObjRef = dol_sanitizeFileName($linkedObject->ref);
+                    // TODO $element doit être faussé en fonction du type de l'objet
                     $filedir = $conf->{$element}->dir_output . '/' . $linkObjRef;
                     $file_list=dol_dir_list($filedir, 'files', 0, '', '(\.meta|_preview.*.*\.png)$', 'date', SORT_DESC);
 

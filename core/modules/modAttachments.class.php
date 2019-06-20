@@ -90,7 +90,12 @@ class modAttachments extends DolibarrModules
 		//							'dir' => array('output' => 'othermodulename'),      // To force the default directories names
 		//							'workflow' => array('WORKFLOW_MODULE1_YOURACTIONTYPE_MODULE2'=>array('enabled'=>'! empty($conf->module1->enabled) && ! empty($conf->module2->enabled)', 'picto'=>'yourpicto@attachments')) // Set here all workflow context managed by module
 		//                        );
-		$this->module_parts = array();
+		$this->module_parts = array(
+		   'hooks' => array(
+		       'globalcard'
+		       , 'formmail'
+           )
+        );
 
 		// Data directories to create when module is enabled.
 		// Example: this->dirs = array("/attachments/temp");

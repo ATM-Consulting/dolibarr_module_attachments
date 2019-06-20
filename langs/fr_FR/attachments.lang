@@ -16,3 +16,13 @@ ParamHelp=Le contenu de l'aide
 
 
 
+# FORMCONFIRM
+ConfirmCancelAttachmentsTitle=Fichiers joints par éléments
+ConfirmCancelAttachmentsBody=Veuillez confirmer les documents que vous souhaitez joindre à votre mail
+AttachmentsTitlePropal=Proposition(s) commerciale(s)
+AttachmentsTitleCommande=Commande(s) client(s)
+AttachmentsTitleFacture=Facture(s) client(s)
+AttachmentsTitleContrat=Contrat
+AttachmentsTitlePropalFournisseur=Demande(s) de prix fournisseur(s)
+AttachmentsTitleCommandeFournisseur=Commande(s) fournisseur(s)
+AttachmentsTitleFactureFournisseur=Facture(s) fournisseur(s)

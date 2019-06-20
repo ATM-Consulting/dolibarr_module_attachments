@@ -80,52 +80,59 @@ function attachments_prepare_head(Attachments $object)
 }
 
 /**
- * @param Form      $form       Form object
- * @param Attachments  $object     Attachments object
- * @param string    $action     Triggered action
+ * @param ActionsAttachments  $actionattachments             Object
+ * @param array         $TFilePathByTitleKey   Array of path
  * @return string
  */
-function getFormConfirmAttachments($form, $object, $action)
+function getFormConfirmAttachments($actionattachments, $TFilePathByTitleKey, $trackid=null)
 {
-    global $langs, $user;
+    global $db, $langs, $user;
 
-    $formconfirm = '';
+    $object = $actionattachments->current_object;
 
-    if ($action === 'valid' && !empty($user->rights->attachments->write))
+    $langs->load('attachments@attachments');
+    $form = new Form($db);
+
+    $formquestion = array();
+
+    $moreparam = array();
+
+    foreach ($_REQUEST as $k => $v)
     {
-        $body = $langs->trans('ConfirmValidateAttachmentsBody', $object->ref);
-        $formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmValidateAttachmentsTitle'), $body, 'confirm_validate', '', 0, 1);
+        if (in_array($k, array('action', 'token', 'id'))) continue;
+        $moreparam[$k] = $v;
     }
-    elseif ($action === 'accept' && !empty($user->rights->attachments->write))
+
+    // Je ne peux pas me baser sur le chemin complet car une fois joint au mail, les chemins pointe vers le dossier "/temp" du user
+    $TSelectedFileName = array();
+    if (!empty($_SESSION['listofnames-'.$trackid])) $TSelectedFileName = array_flip(explode(';', $_SESSION['listofnames-'.$trackid]));
+
+    foreach ($TFilePathByTitleKey as $titleKey => $TFilePathByRef)
     {
-        $body = $langs->trans('ConfirmAcceptAttachmentsBody', $object->ref);
-        $formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmAcceptAttachmentsTitle'), $body, 'confirm_accept', '', 0, 1);
+        $formquestion[] = array('type' => 'onecolumn', 'value' => '<b>'.$langs->trans($titleKey).'</b>');
+        foreach ($TFilePathByRef as $ref => $file_info)
+        {
+            $formquestion[] = array('type' => 'onecolumn', 'value' => '<b>'.str_repeat('&nbsp;', 4).$ref.'</b>');
+            foreach ($file_info as $info)
+            {
+                $value = isset($TSelectedFileName[$info['name']]) ? 1 : 0;
+                $formquestion[] = array('type' => 'checkbox', 'label' => str_repeat('&nbsp;', 8).$info['name'], 'name' => 'TAttachments_'.$info['fullname_md5'], 'value' => $value, 'moreattr' => ' value="'.$info['fullname_md5'].'"', 'tdclass' => 'oddeven');
+            }
+        }
     }
-    elseif ($action === 'refuse' && !empty($user->rights->attachments->write))
-    {
-        $body = $langs->trans('ConfirmRefuseAttachmentsBody', $object->ref);
-        $formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmRefuseAttachmentsTitle'), $body, 'confirm_refuse', '', 0, 1);
-    }
-    elseif ($action === 'reopen' && !empty($user->rights->attachments->write))
-    {
-        $body = $langs->trans('ConfirmReopenAttachmentsBody', $object->ref);
-        $formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmReopenAttachmentsTitle'), $body, 'confirm_refuse', '', 0, 1);
-    }
-    elseif ($action === 'delete' && !empty($user->rights->attachments->write))
-    {
-        $body = $langs->trans('ConfirmDeleteAttachmentsBody');
-        $formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmDeleteAttachmentsTitle'), $body, 'confirm_delete', '', 0, 1);
-    }
-    elseif ($action === 'clone' && !empty($user->rights->attachments->write))
-    {
-        $body = $langs->trans('ConfirmCloneAttachmentsBody', $object->ref);
-        $formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmCloneAttachmentsTitle'), $body, 'confirm_clone', '', 0, 1);
-    }
-    elseif ($action === 'cancel' && !empty($user->rights->attachments->write))
-    {
-        $body = $langs->trans('ConfirmCancelAttachmentsBody', $object->ref);
-        $formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmCancelAttachmentsTitle'), $body, 'confirm_cancel', '', 0, 1);
-    }
+
+    $formconfirm = $form->formconfirm(
+        $_SERVER['PHP_SELF'] . '?id=' . $object->id.'&'.http_build_query($moreparam)
+        , $langs->trans('ConfirmCancelAttachmentsTitle')
+        , '<i>'.$langs->trans('ConfirmCancelAttachmentsBody').'</i>'
+        , 'confirm_attachments_send'
+        , $formquestion
+        , 0
+        , 1
+        , 'auto'
+        , 'auto'
+    );
+
 
     return $formconfirm;
 }

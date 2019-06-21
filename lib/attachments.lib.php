@@ -112,7 +112,8 @@ function getFormConfirmAttachments($actionattachments, $TFilePathByTitleKey, $tr
         $formquestion[] = array('type' => 'onecolumn', 'value' => '<b>'.$langs->trans($titleKey).'</b>');
         foreach ($TFilePathByRef as $ref => $file_info)
         {
-            $formquestion[] = array('type' => 'onecolumn', 'value' => '<b>'.str_repeat('&nbsp;', 4).$ref.'</b>');
+            $class = $object->ref == $ref ? 'fieldrequired' : '';
+            $formquestion[] = array('type' => 'onecolumn', 'value' => '<b class="'.$class.'">'.str_repeat('&nbsp;', 4).$ref.'</b>');
             foreach ($file_info as $info)
             {
                 $value = isset($TSelectedFileName[$info['name']]) ? 1 : 0;

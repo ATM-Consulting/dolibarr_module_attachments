@@ -94,6 +94,8 @@ class ActionsAttachments
             $this->current_object = $object;
             $this->current_object->fetchObjectLinked();
 
+            $this->current_object->linkedObjects[$this->current_object->element][] = $this->current_object;
+
             // Gestion des objets standards
             foreach ($this->current_object->linkedObjects as $element => $TLinkedObject)
             {
@@ -242,6 +244,13 @@ class ActionsAttachments
                             $("#action").val("attachments_send"); // Maj de "action" pour interception côté "doActions"
                             $("#addfile").click(); // Simulation du clique sur le bouton "Joindre ce fichier"
                         }
+                        
+                        if (window.location.hash === "")
+                        {
+                            let attachments_top = document.getElementById("formmail").offsetTop; //Getting Y of target element
+                            window.scrollTo(0, attachments_top);
+                        }
+
                     });
                 </script>
             ';

@@ -52,6 +52,7 @@ class ActionsAttachments
         , 'supplier_proposal' => 'AttachmentsTitlePropalFournisseur'
         , 'order_supplier' => 'AttachmentsTitleCommandeFournisseur'
         , 'invoice_supplier' => 'AttachmentsTitleFactureFournisseur'
+        , 'fichinter' => 'AttachmentsTitleFicheInter'
     );
 
 	public $TFilePathByTitleKey = array();
@@ -99,12 +100,25 @@ class ActionsAttachments
             // Gestion des objets standards
             foreach ($this->current_object->linkedObjects as $element => $TLinkedObject)
             {
+                $sub_element_to_use = '';
+                $subdir = '';
+                if ($element === 'fichinter') $element_to_use = 'ficheinter';
+                elseif ($element === 'order_supplier') { $element_to_use = 'fournisseur'; $subdir = '/commande'; }
+                elseif ($element === 'invoice_supplier') { $element_to_use = 'fournisseur'; $sub_element_to_use = 'facture'; /* $subdir is defined in the next loop */ }
+                else $element_to_use = $element;
+
+                /** @var CommonObject $linkedObject */
                 foreach ($TLinkedObject as $linkedObject)
                 {
                     // Documents
                     $linkObjRef = dol_sanitizeFileName($linkedObject->ref);
+
+                    if ($element === 'invoice_supplier') $subdir = '/'.get_exdir($linkedObject->id, 2, 0, 0, $linkedObject, 'invoice_supplier');
+
                     // TODO $element doit être faussé en fonction du type de l'objet
-                    $filedir = $conf->{$element}->dir_output . '/' . $linkObjRef;
+                    if (!empty($sub_element_to_use)) $filedir = $conf->{$element_to_use}->{$sub_element_to_use}->dir_output . $subdir . '/' . $linkObjRef;
+                    else $filedir = $conf->{$element_to_use}->dir_output . $subdir . '/' . $linkObjRef;
+
                     $file_list=dol_dir_list($filedir, 'files', 0, '', '(\.meta|_preview.*.*\.png)$', 'date', SORT_DESC);
 
                     if (!empty($file_list))

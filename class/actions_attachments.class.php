@@ -43,6 +43,16 @@ class ActionsAttachments
 	 */
 	public $errors = array();
 
+    public $TTileKeyRank = array(
+        'AttachmentsTitlePropal' => 5
+        , 'AttachmentsTitleCommande' => 10
+        , 'AttachmentsTitleFacture' => 15
+        , 'AttachmentsTitleContrat' => 20
+        , 'AttachmentsTitlePropalFournisseur' => 25
+        , 'AttachmentsTitleCommandeFournisseur' => 30
+        , 'AttachmentsTitleFactureFournisseur' => 35
+        , 'AttachmentsTitleFicheInter' => 40
+    );
 
 	public $TTileKeyByElement = array(
         'propal' => 'AttachmentsTitlePropal'
@@ -148,6 +158,15 @@ class ActionsAttachments
                     // TODO voir si "array_merge_recursive" correspond au comportement attendu
                     $this->TFilePathByTitleKey = array_merge_recursive($this->TFilePathByTitleKey, $hookmanager->resArray);
                 }
+            }
+            elseif ($reshook > 0) $this->TFilePathByTitleKey = $hookmanager->resArray;
+
+
+            $param = array('TTileKeyRank' => $this->TTileKeyRank);
+            $reshook = $hookmanager->executeHooks('attachSort', $param, $this->TFilePathByTitleKey, $action); // Note that $action and $object may have been modified by some hooks
+            if (empty($reshook))
+            {
+                uksort($this->TFilePathByTitleKey, array($this, 'cmp'));
             }
 
 
@@ -278,5 +297,23 @@ class ActionsAttachments
         }
 
         return 0;
+    }
+
+    /**
+     * @param string $a
+     * @param string $b
+     * @return int
+     */
+    private function cmp($a, $b)
+    {
+        global $langs;
+
+        if (isset($this->TTileKeyRank[$a]) && isset($this->TTileKeyRank[$b])) return $this->TTileKeyRank[$a] - $this->TTileKeyRank[$b];
+        elseif (isset($this->TTileKeyRank[$a])) return -1;
+        elseif (isset($this->TTileKeyRank[$b])) return 1;
+        else
+        {
+            return strcmp($langs->trans($a), $langs->trans($b));
+        }
     }
 }

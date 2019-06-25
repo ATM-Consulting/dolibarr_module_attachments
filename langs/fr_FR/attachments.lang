@@ -1,12 +1,11 @@
-Module104902Name = Attachments
-Module104902Desc = Attachments Description
-
+Module104902Name = Pièces jointes liées
+Module104902Desc = Permet d'ajouter une icône sur les formulaires d'envois de mails des documents (propositions, commande, ...)
 ATMAbout = Ce module a été développé par <a href="http://www.atm-consulting.fr" target="_blank">ATM Consulting</a><br>Vous pouvez retrouver la documentation sur notre <a href="http://wiki.atm-consulting.fr/index.php/Accueil" target="_blank">wiki</a><br><br>Pour toute question technique ou retour, contactez-nous sur <a href="mailto:support@atm-consulting.fr">support@atm-consulting.fr</a><br><br>Pour toute question commerciale, contactez-nous sur <a href="mailto:contact@atm-consulting.fr">contact@atm-consulting.fr</a> ou au +33 9 77 19 50 70<br><br>Retrouvez nos autres modules sur <a href="http://www.dolistore.com/search.php?orderby=position&orderway=desc&search_query=atm&submit_search=Rechercher" target="_blank">Dolistore</a>
 
-AttachmentsSetup = Configuration du module Attachments
-AttachmentsAbout = A propos du module Attachments
+AttachmentsSetup = Configuration du module Pièces jointes liées
+AttachmentsAbout = A propos du module Pièces jointes liées
 
-Attachments=Attachments
+Attachments=Pièces jointes liées
 AbricotNeedUpdate=Le module abricot doit être mis à jour
 
 # SETUP
@@ -14,17 +13,17 @@ ParamLabel=Nom du paramètre
 ParamDesc=Une description si besoin
 ParamHelp=Le contenu de l'aide
 
-ATTACHMENTS_INCLUDE_PRODUCT_LINES=Activer l'inclusion des fichiers joints provenant des produits/services des lignes
+ATTACHMENTS_INCLUDE_PRODUCT_LINES=Activer l'inclusion des fichiers provenant des produits/services des lignes
 
 # FORMCONFIRM
-ConfirmCancelAttachmentsTitle=Fichiers joints par éléments
+ConfirmCancelAttachmentsTitle=Fichiers par élément
 ConfirmCancelAttachmentsBody=Veuillez cocher les documents que vous souhaitez joindre à votre mail
-AttachmentsTitleProductOrService=Produit(s) / Service(s) du document courrant
-AttachmentsTitlePropal=Proposition(s) commerciale(s)
-AttachmentsTitleCommande=Commande(s) client(s)
-AttachmentsTitleFacture=Facture(s) client(s)
+AttachmentsTitleProductOrService=Produit / Service du document courant
+AttachmentsTitlePropal=Proposition commerciale
+AttachmentsTitleCommande=Commande client
+AttachmentsTitleFacture=Facture client
 AttachmentsTitleContrat=Contrat
-AttachmentsTitlePropalFournisseur=Demande(s) de prix fournisseur(s)
-AttachmentsTitleCommandeFournisseur=Commande(s) fournisseur(s)
-AttachmentsTitleFactureFournisseur=Facture(s) fournisseur(s)
-AttachmentsTitleFicheInter=Fiche(s) intervention(s)
+AttachmentsTitlePropalFournisseur=Demande de prix fournisseur
+AttachmentsTitleCommandeFournisseur=Commande fournisseur
+AttachmentsTitleFactureFournisseur=Facturefournisseur
+AttachmentsTitleFicheInter=Fiche intervention

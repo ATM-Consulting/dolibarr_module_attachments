@@ -44,7 +44,8 @@ class ActionsAttachments
 	public $errors = array();
 
     public $TTileKeyRank = array(
-        'AttachmentsTitlePropal' => 5
+        'AttachmentsTitleProductOrService' => 0
+        ,'AttachmentsTitlePropal' => 5
         , 'AttachmentsTitleCommande' => 10
         , 'AttachmentsTitleFacture' => 15
         , 'AttachmentsTitleContrat' => 20
@@ -55,7 +56,8 @@ class ActionsAttachments
     );
 
 	public $TTileKeyByElement = array(
-        'propal' => 'AttachmentsTitlePropal'
+        'product' => 'AttachmentsTitleProductOrService'
+        ,'propal' => 'AttachmentsTitlePropal'
         , 'commande' => 'AttachmentsTitleCommande'
         , 'facture' => 'AttachmentsTitleFacture'
         , 'contrat' => 'AttachmentsTitleContrat'
@@ -75,13 +77,15 @@ class ActionsAttachments
 
 	public $modelmailselected;
 
-	/**
-	 * Constructor
-	 */
-	public function __construct($db)
-	{
+
+    /**
+     * ActionsAttachments constructor.
+     * @param DoliDB    $db     Database connector
+     */
+    public function __construct($db)
+    {
 		$this->db = $db;
-	}
+    }
 
 	/**
 	 * Overloading the doActions function : replacing the parent's function with the one below
@@ -105,7 +109,23 @@ class ActionsAttachments
             $this->current_object = $object;
             $this->current_object->fetchObjectLinked();
 
-            $this->current_object->linkedObjects[$this->current_object->element][] = $this->current_object;
+            if (empty($this->current_object->linkedObjects[$this->current_object->element])) $this->current_object->linkedObjects[$this->current_object->element] = array();
+            array_unshift($this->current_object->linkedObjects[$this->current_object->element], $this->current_object);
+
+            if (!empty($conf->global->ATTACHMENTS_INCLUDE_PRODUCT_LINES) && !empty($this->current_object->lines))
+            {
+                foreach ($this->current_object->lines as $line)
+                {
+                    if (!empty($line->fk_product) && !isset($this->current_object->linkedObjects['product'][$line->fk_product]))
+                    {
+                        $product = new Product($this->db);
+                        if ($product->fetch($line->fk_product) > 0)
+                        {
+                            $this->current_object->linkedObjects['product'][$line->fk_product] = $product;
+                        }
+                    }
+                }
+            }
 
             // Gestion des objets standards
             foreach ($this->current_object->linkedObjects as $element => $TLinkedObject)
@@ -187,7 +207,7 @@ class ActionsAttachments
                 $TAttachments = array();
                 foreach ($_REQUEST as $k => $v)
                 {
-                    // On provient d'un formconfirm, et il n'est pas possible de faire passer des tableaux de valeurs
+                    // On provient d'un formconfirm, et il n'est pas possible de faire passer des tableaux de valeur
                     if (preg_match('/^TAttachments\_[a-f0-9]{32}$/', $k) && !empty($v))
                     {
                         $TAttachments[$v] = $v;
@@ -239,12 +259,15 @@ class ActionsAttachments
                 $_GET['addfile'] = ''; // Permet de bi-passer un setEventMessage de Dolibarr
             }
 
-            $modelmailselected = GETPOST('modelmailselected', 'alpha');
-            if ($modelmailselected != -1)
+            if (!empty($this->TFilePathByTitleKey))
             {
-                // Permet d'esquiver l'appel à "clear_attached_files()" dans la méthode "get_form()" @see
-                unset($_POST['modelmailselected']);
-                $this->modelmailselected = $modelmailselected;
+                $modelmailselected = GETPOST('modelmailselected', 'alpha');
+                if ($modelmailselected != -1)
+                {
+                    // Permet d'esquiver l'appel à "clear_attached_files()" dans la méthode "get_form()" @see
+                    unset($_POST['modelmailselected']);
+                    $this->modelmailselected = $modelmailselected;
+                }
             }
 
             $this->action = $action;
@@ -266,33 +289,36 @@ class ActionsAttachments
     {
         if (in_array($this->action, array('presend', 'send')))
         {
-            print '
-                <script type="text/javascript">
-                    $(function() {
-                        let attachments_button = $("<span class=\'fa fa-paperclip\' onclick=\'attachments_send()\'></span>");
-                        $("#addfile").after(attachments_button);
-                        
-                        attachments_send = function()
-                        {
-                            $("#action").val("attachments_send"); // Maj de "action" pour interception côté "doActions"
-                            $("#addfile").click(); // Simulation du clique sur le bouton "Joindre ce fichier"
-                        }
-                        
-                        if (window.location.hash === "")
-                        {
-                            let attachments_top = document.getElementById("formmail").offsetTop; //Getting Y of target element
-                            window.scrollTo(0, attachments_top);
-                        }
-
-                    });
-                </script>
-            ';
-
-            if (!empty($this->formconfirm)) print $this->formconfirm;
-
-            if (!empty($this->modelmailselected))
+            if (!empty($this->TFilePathByTitleKey))
             {
-                $object->param['models_id'] = $this->modelmailselected;
+                print '
+                    <script type="text/javascript">
+                        $(function() {
+                            let attachments_button = $("<span class=\'fa fa-paperclip\' onclick=\'attachments_send()\'></span>");
+                            $("#addfile").after(attachments_button);
+                            
+                            attachments_send = function()
+                            {
+                                $("#action").val("attachments_send"); // Maj de "action" pour interception côté "doActions"
+                                $("#addfile").click(); // Simulation du clique sur le bouton "Joindre ce fichier"
+                            }
+                            
+                            if (window.location.hash === "")
+                            {
+                                let attachments_top = document.getElementById("formmail").offsetTop; //Getting Y of target element
+                                window.scrollTo(0, attachments_top);
+                            }
+    
+                        });
+                    </script>
+                ';
+
+                if (!empty($this->formconfirm)) print $this->formconfirm;
+
+                if (!empty($this->modelmailselected))
+                {
+                    $object->param['models_id'] = $this->modelmailselected;
+                }
             }
         }
 

@@ -14,11 +14,12 @@ ParamLabel=Nom du paramètre
 ParamDesc=Une description si besoin
 ParamHelp=Le contenu de l'aide
 
-
+ATTACHMENTS_INCLUDE_PRODUCT_LINES=Activer l'inclusion des fichiers joints provenant des produits/services des lignes
 
 # FORMCONFIRM
 ConfirmCancelAttachmentsTitle=Fichiers joints par éléments
-ConfirmCancelAttachmentsBody=Veuillez confirmer les documents que vous souhaitez joindre à votre mail
+ConfirmCancelAttachmentsBody=Veuillez cocher les documents que vous souhaitez joindre à votre mail
+AttachmentsTitleProductOrService=Produit(s) / Service(s) du document courrant
 AttachmentsTitlePropal=Proposition(s) commerciale(s)
 AttachmentsTitleCommande=Commande(s) client(s)
 AttachmentsTitleFacture=Facture(s) client(s)

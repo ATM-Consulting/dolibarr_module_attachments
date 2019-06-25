@@ -89,6 +89,8 @@ function getFormConfirmAttachments($actionattachments, $TFilePathByTitleKey, $tr
 {
     global $db, $langs;
 
+    if (empty($TFilePathByTitleKey)) return '';
+
     $object = $actionattachments->current_object;
 
     $langs->load('attachments@attachments');
@@ -162,6 +164,10 @@ function getFormConfirmAttachments($actionattachments, $TFilePathByTitleKey, $tr
             
             #attachments-accordion .searchable {
                 margin: 0 0 8px 0;
+            }
+            
+            #attachments-accordion .searchable label {
+                padding-right: 8px;
             }
             
             #attachments-accordion .currentobject::before {

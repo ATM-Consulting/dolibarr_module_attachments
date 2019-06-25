@@ -80,13 +80,14 @@ function attachments_prepare_head(Attachments $object)
 }
 
 /**
- * @param ActionsAttachments  $actionattachments             Object
- * @param array         $TFilePathByTitleKey   Array of path
+ * @param ActionsAttachments    $actionattachments      Object
+ * @param array                 $TFilePathByTitleKey    Array of path
+ * @param string                $trackid                Key to avoid conflicts
  * @return string
  */
-function getFormConfirmAttachments($actionattachments, $TFilePathByTitleKey, $trackid=null)
+function getFormConfirmAttachments($actionattachments, $TFilePathByTitleKey, $trackid = null)
 {
-    global $db, $langs, $user;
+    global $db, $langs;
 
     $object = $actionattachments->current_object;
 
@@ -107,20 +108,109 @@ function getFormConfirmAttachments($actionattachments, $TFilePathByTitleKey, $tr
     $TSelectedFileName = array();
     if (!empty($_SESSION['listofnames-'.$trackid])) $TSelectedFileName = array_flip(explode(';', $_SESSION['listofnames-'.$trackid]));
 
+    $html = '
+        <div>
+            <i class="fa fa-search"></i>
+            <input type="text" id="attachments-item-filter" class="search-filter" data-target="" value="" placeholder="Rechercher" <span="">
+            <span id="attachments-filter-count-wrap" >'.$langs->trans('Result').': <span id="attachments-filter-count" ></span></span>    
+        </div>';
+
+    $html.= '<dl id="attachments-accordion">';
     foreach ($TFilePathByTitleKey as $titleKey => $TFilePathByRef)
     {
-        $formquestion[] = array('type' => 'onecolumn', 'value' => '<b>'.$langs->trans($titleKey).'</b>');
+        $html.= '
+            <dt class="title">
+                <b>'.$langs->trans($titleKey).'</b><span class="attachments-element-count badge" data-element-count=""></span>
+            </dt>';
+
+        $html.= '<dd class="panel">';
         foreach ($TFilePathByRef as $ref => $file_info)
         {
-            $class = $object->ref == $ref ? 'fieldrequired' : '';
-            $formquestion[] = array('type' => 'onecolumn', 'value' => '<b class="'.$class.'">'.str_repeat('&nbsp;', 4).$ref.'</b>');
+            $class = $object->ref === $ref ? 'currentobject' : '';
+            $html.= '
+                <p class="subtitle">
+                    <b class="'.$class.'">'.str_repeat('&nbsp;', 4).$ref.'</b>
+                </p>';
             foreach ($file_info as $info)
             {
-                $value = isset($TSelectedFileName[$info['name']]) ? 1 : 0;
-                $formquestion[] = array('type' => 'checkbox', 'label' => str_repeat('&nbsp;', 8).$info['name'], 'name' => 'TAttachments_'.$info['fullname_md5'], 'value' => $value, 'moreattr' => ' value="'.$info['fullname_md5'].'"', 'tdclass' => 'oddeven');
+                $id = 'TAttachments_'.$info['fullname_md5'];
+                $checked = isset($TSelectedFileName[$info['name']]) ? 'checked' : '';
+                $html.= '
+                    <div class="searchable search-match oddeven">
+                        '.str_repeat('&nbsp;', 8).'<input id="'.$id.'" name="'.$id.'" type="checkbox" '.$checked.' value="'.$info['fullname_md5'].'" class="pull-right" />
+                        <label for="'.$id.'">'.$info['name'].'</label>
+                    </div>';
+                $formquestion[] = array('name' => 'TAttachments_'.$info['fullname_md5']);
             }
         }
+        $html.= '</dd>';
     }
+    $html.= '</dl>';
+
+    $formquestion['text'] = $html.'
+        <style type="text/css">
+            #attachments-accordion .attachments-element-count {
+                margin-left: 8px;
+            }
+            #attachments-accordion .attachments-element-count::after {
+                content: attr(data-element-count);
+            }
+            
+            #attachments-accordion .subtitle {
+                margin: 4px 0 8px 0;
+            }
+            
+            #attachments-accordion .searchable {
+                margin: 0 0 8px 0;
+            }
+            
+            #attachments-accordion .currentobject::before {
+                content: "*"
+            }
+            #attachments-accordion .currentobject {
+                color: blue;
+            }
+        </style>
+        
+        <script type="text/javascript">
+            $(function() {
+                $("#attachments-accordion").accordion({
+                    header: "dt"
+                    , heightStyle: "content"
+                    , collapsible: true
+                });
+                
+                $( document ).on("keyup", "#attachments-item-filter", function () {
+                    let filter = $(this).val(), count = 0;
+                    $("#attachments-accordion .searchable").each(function () {
+                        if ($(this).text().search(new RegExp(filter, "i")) < 0) {
+                            $(this).removeClass("search-match").hide();
+                        } else {
+                            $(this).addClass("search-match").show();
+                            count++;
+                        }
+                    });
+                    
+                    $("#attachments-filter-count").text(count);
+                    
+                    updateBadgeCount();
+                });
+                
+                updateBadgeCount = function () {
+                    $("#attachments-accordion .attachments-element-count").each(function(i, item) {
+                        let dtId = $(item).parent().attr("id");
+                        let nb = $("dd[aria-labelledby="+dtId+"]").find("div.searchable.search-match").length;
+                        item.dataset.elementCount = nb;
+                        
+                        if (nb > 0) $(this).addClass("badge-primary").removeClass("badge-secondary");
+                        else $(this).addClass("badge-secondary").removeClass("badge-primary");
+                    });
+                }
+                
+                updateBadgeCount();
+            });
+        </script>
+    ';
 
     $formconfirm = $form->formconfirm(
         $_SERVER['PHP_SELF'] . '?id=' . $object->id.'&'.http_build_query($moreparam)

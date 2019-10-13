@@ -1,21 +1,20 @@
-Module104902Name = Pièces jointes liées
-Module104902Desc = Permet d'ajouter une icône sur les formulaires d'envois de mails des documents (propositions, commande, ...)
+Module104902Name = Pièces-jointes d'e-mail
+Module104902Desc = Permet d'ajouter facilement des pièces-jointes lors de l'envoi d'e-mails
 ATMAbout = Ce module a été développé par <a href="http://www.atm-consulting.fr" target="_blank">ATM Consulting</a><br>Vous pouvez retrouver la documentation sur notre <a href="http://wiki.atm-consulting.fr/index.php/Accueil" target="_blank">wiki</a><br><br>Pour toute question technique ou retour, contactez-nous sur <a href="mailto:support@atm-consulting.fr">support@atm-consulting.fr</a><br><br>Pour toute question commerciale, contactez-nous sur <a href="mailto:contact@atm-consulting.fr">contact@atm-consulting.fr</a> ou au +33 9 77 19 50 70<br><br>Retrouvez nos autres modules sur <a href="http://www.dolistore.com/search.php?orderby=position&orderway=desc&search_query=atm&submit_search=Rechercher" target="_blank">Dolistore</a>
 
-AttachmentsSetup = Configuration du module Pièces jointes liées
-AttachmentsAbout = A propos du module Pièces jointes liées
+AttachmentsSetup = Configuration du module Pièces-jointes d'e-mail
+AttachmentsAbout = A propos du module Pièces-jointes d'e-mail
 
-Attachments=Pièces jointes liées
+Attachments=Pièces-jointes d'e-mail
 AbricotNeedUpdate=Le module abricot doit être mis à jour
 
 # SETUP
-
-ATTACHMENTS_INCLUDE_PRODUCT_LINES=Activer l'inclusion des fichiers provenant des produits/services des lignes
+ATTACHMENTS_INCLUDE_PRODUCT_LINES=Activer la recherche dans les fichiers provenant des produits/services du document courant
 
 # FORMCONFIRM
-ConfirmCancelAttachmentsTitle=Fichiers par élément
-ConfirmCancelAttachmentsBody=Veuillez cocher les documents que vous souhaitez joindre à votre mail
-AttachmentsTitleProductOrService=Produit / Service du document courant
+ConfirmCancelAttachmentsTitle=Fichiers à joindre à votre e-mail
+ConfirmCancelAttachmentsBody=Veuillez cocher les fichiers que vous souhaitez joindre à votre e-mail
+AttachmentsTitleProductOrService=Produits / Services du document courant
 AttachmentsTitlePropal=Proposition commerciale
 AttachmentsTitleCommande=Commande client
 AttachmentsTitleFacture=Facture client

@@ -107,7 +107,7 @@ class ActionsAttachments
             $hookmanager->initHooks(array('attachmentsform'));
 
             $this->current_object = $object;
-            $this->current_object->fetchObjectLinked();
+            if (!empty($conf->global->ATTACHMENTS_INCLUDE_OBJECT_LINKED)) $this->current_object->fetchObjectLinked();
 
             if (empty($this->current_object->linkedObjects[$this->current_object->element])) $this->current_object->linkedObjects[$this->current_object->element] = array();
             array_unshift($this->current_object->linkedObjects[$this->current_object->element], $this->current_object);
@@ -130,6 +130,12 @@ class ActionsAttachments
             // Gestion des objets standards
             foreach ($this->current_object->linkedObjects as $element => $TLinkedObject)
             {
+                if (empty($conf->global->ATTACHMENTS_INCLUDE_OBJECT_LINKED) && $element !== 'product' && $element !== $this->current_object->element)
+                {
+                    // Si la recherche dans les objets liés n'est pas actif et qu'on est pas sur un élément "product" ou de l'objet courant, alors on passe
+                    continue;
+                }
+
                 $sub_element_to_use = '';
                 $subdir = '';
                 if ($element === 'fichinter') $element_to_use = 'ficheinter';
@@ -326,8 +332,8 @@ class ActionsAttachments
     }
 
     /**
-     * @param string $a
-     * @param string $b
+     * @param string $a First element
+     * @param string $b Second element
      * @return int
      */
     private function cmp($a, $b)

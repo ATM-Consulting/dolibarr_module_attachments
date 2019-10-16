@@ -10,6 +10,7 @@ AbricotNeedUpdate=The 'Abricot' module need to be update
 
 # SETUP
 ATTACHMENTS_INCLUDE_PRODUCT_LINES=Search files related to products /services of the current document
+ATTACHMENTS_INCLUDE_OBJECT_LINKED=Search files related to the linked objects of the current document
 
 # FORMCONFIRM
 ConfirmCancelAttachmentsTitle=Files to attach to your e-mail

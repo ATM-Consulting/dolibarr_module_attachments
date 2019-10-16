@@ -10,6 +10,7 @@ AbricotNeedUpdate=Le module abricot doit être mis à jour
 
 # SETUP
 ATTACHMENTS_INCLUDE_PRODUCT_LINES=Activer la recherche dans les fichiers provenant des produits/services du document courant
+ATTACHMENTS_INCLUDE_OBJECT_LINKED=Activer la recherche dans les fichiers provenant des éléments liés au document courant
 
 # FORMCONFIRM
 ConfirmCancelAttachmentsTitle=Fichiers à joindre à votre e-mail

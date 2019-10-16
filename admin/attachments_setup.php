@@ -111,6 +111,7 @@ setup_print_title("Parameters");
 
 // Example with a yes / no select
 setup_print_on_off('ATTACHMENTS_INCLUDE_PRODUCT_LINES');
+setup_print_on_off('ATTACHMENTS_INCLUDE_OBJECT_LINKED');
 
 // Example with imput
 //setup_print_input_form_part('CONSTNAME', $langs->trans('ParamLabel'));

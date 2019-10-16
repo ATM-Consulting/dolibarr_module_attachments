@@ -227,7 +227,7 @@ function getFormConfirmAttachments($actionattachments, $TFilePathByTitleKey, $tr
         , 0
         , 1
         , 'auto'
-        , 'auto'
+        , '800'
     );
 
 

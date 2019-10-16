@@ -122,7 +122,9 @@ function getFormConfirmAttachments($actionattachments, $TFilePathByTitleKey, $tr
     {
         $html.= '
             <dt class="title">
-                <b>'.$langs->trans($titleKey).'</b><span class="attachments-element-count badge" data-element-count=""></span>
+                <b>'.$langs->trans($titleKey).'</b>
+                <span title="'.$langs->trans('AttachmentsSelectedOnTotalAvailable').'" class="attachments-element-selected badge badge-secondary" data-element-selected=""></span>
+                <span title="'.$langs->trans('AttachmentsFiltered').'" class="attachments-element-count badge" data-element-count=""></span>
             </dt>';
 
         $html.= '<dd class="panel">';
@@ -151,11 +153,14 @@ function getFormConfirmAttachments($actionattachments, $TFilePathByTitleKey, $tr
 
     $formquestion['text'] = $html.'
         <style type="text/css">
-            #attachments-accordion .attachments-element-count {
+            #attachments-accordion .attachments-element-count, #attachments-accordion .attachments-element-selected {
                 margin-left: 8px;
             }
             #attachments-accordion .attachments-element-count::after {
                 content: attr(data-element-count);
+            }
+            #attachments-accordion .attachments-element-selected::after {
+                content: attr(data-element-selected);
             }
             
             #attachments-accordion .subtitle {
@@ -208,12 +213,25 @@ function getFormConfirmAttachments($actionattachments, $TFilePathByTitleKey, $tr
                         let nb = $("dd[aria-labelledby="+dtId+"]").find("div.searchable.search-match").length;
                         item.dataset.elementCount = nb;
                         
-                        if (nb > 0) $(this).addClass("badge-primary").removeClass("badge-secondary");
-                        else $(this).addClass("badge-secondary").removeClass("badge-primary");
+                        if (nb > 0) $(this).addClass("badge-warning").removeClass("badge-secondary");
+                        else $(this).addClass("badge-secondary").removeClass("badge-warning");
                     });
-                }
+                };
                 
                 updateBadgeCount();
+                
+                updateBadgeSelected = function () {
+                    $("#attachments-accordion .attachments-element-selected").each(function(i, item) {
+                        let dtId = $(item).parent().attr("id");
+                        let nb = $("dd[aria-labelledby="+dtId+"]").find("input[type=checkbox]").length;
+                        let nb_selected = $("dd[aria-labelledby="+dtId+"]").find("input[type=checkbox]:checked").length;
+                        item.dataset.elementSelected = nb_selected + " / " + nb;
+                    });
+                };
+                
+                updateBadgeSelected();
+                
+                $("#attachments-accordion input[type=checkbox]").change(updateBadgeSelected);
             });
         </script>
     ';

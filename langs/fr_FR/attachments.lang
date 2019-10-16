@@ -24,3 +24,6 @@ AttachmentsTitlePropalFournisseur=Demande de prix fournisseur
 AttachmentsTitleCommandeFournisseur=Commande fournisseur
 AttachmentsTitleFactureFournisseur=Facture fournisseur
 AttachmentsTitleFicheInter=Intervention
+
+AttachmentsFiltered=Nombre d'éléments correspondant à votre recherche
+AttachmentsSelectedOnTotalAvailable=Nombre d'éléments sélectionné sur le total disponible

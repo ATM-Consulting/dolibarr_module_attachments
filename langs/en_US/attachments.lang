@@ -24,6 +24,8 @@ AttachmentsTitlePropalFournisseur=Vendor proposal
 AttachmentsTitleCommandeFournisseur=Purchase order
 AttachmentsTitleFactureFournisseur=Vendor invoice
 AttachmentsTitleFicheInter=Intervention
+AttachmentsSociete=Company
+AttachmentsTitleEcm=Documents (EDM)
 
 AttachmentsFiltered=Elements corresponding to your search term
 AttachmentsSelectedOnTotalAvailable=Number of selected elements on total available

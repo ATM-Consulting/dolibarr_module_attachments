@@ -53,6 +53,8 @@ class ActionsAttachments
         , 'AttachmentsTitleCommandeFournisseur' => 30
         , 'AttachmentsTitleFactureFournisseur' => 35
         , 'AttachmentsTitleFicheInter' => 40
+        , 'AttachmentsSociete' => 50
+        , 'AttachmentsTitleEcm' => 500
     );
 
 	public $TTileKeyByElement = array(
@@ -65,6 +67,8 @@ class ActionsAttachments
         , 'order_supplier' => 'AttachmentsTitleCommandeFournisseur'
         , 'invoice_supplier' => 'AttachmentsTitleFactureFournisseur'
         , 'fichinter' => 'AttachmentsTitleFicheInter'
+        , 'societe' => 'AttachmentsSociete'
+        , 'ecm' => 'AttachmentsTitleEcm'
     );
 
 	public $TFilePathByTitleKey = array();
@@ -148,6 +152,8 @@ class ActionsAttachments
                 {
                     // Documents
                     $linkObjRef = dol_sanitizeFileName($linkedObject->ref);
+                    if ($element == 'societe') $linkObjRefKey = $linkedObject->nom;
+                    else $linkObjRefKey = $linkObjRef;
 
                     if ($element === 'invoice_supplier') $subdir = '/'.get_exdir($linkedObject->id, 2, 0, 0, $linkedObject, 'invoice_supplier');
 
@@ -163,7 +169,7 @@ class ActionsAttachments
                         foreach ($file_list as $file_info)
                         {
                             $fullname_md5 = md5($file_info['fullname']);
-                            $this->TFilePathByTitleKey[$key][$linkObjRef][$fullname_md5] = array(
+                            $this->TFilePathByTitleKey[$key][$linkObjRefKey][$fullname_md5] = array(
                                 'name' => $file_info['name']
                                 ,'path' => $file_info['path']
                                 ,'fullname' => $file_info['fullname']
@@ -171,6 +177,19 @@ class ActionsAttachments
                             );
                         }
                     }
+                }
+            }
+
+            if (!empty($conf->ecm->enabled) && $conf->global->ATTACHMENTS_ECM_SCANDIR > 0)
+            {
+                require_once DOL_DOCUMENT_ROOT.'/ecm/class/ecmdirectory.class.php';
+                $ecmdir = new EcmDirectory($this->db);
+                if ($ecmdir->fetch($conf->global->ATTACHMENTS_ECM_SCANDIR) > 0)
+                {
+                    $fullpathselecteddir = $conf->ecm->dir_output.'/'.$ecmdir->getRelativePath();
+                    $key = $this->TTileKeyByElement['ecm'];
+
+                    $this->nyandog($key, $fullpathselecteddir, $ecmdir->label);
                 }
             }
 
@@ -346,6 +365,43 @@ class ActionsAttachments
         else
         {
             return strcmp($langs->trans($a), $langs->trans($b));
+        }
+    }
+
+    /**
+     * @param string $key                   key
+     * @param string $fullpathselecteddir   directory to scan (value must finish with '/')
+     * @param string $dir                   current sub directory
+     * @return null
+     */
+    private function nyandog($key, $fullpathselecteddir, $dir = '')
+    {
+        if (is_dir($fullpathselecteddir))
+        {
+            $files = @scandir($fullpathselecteddir);
+            foreach ($files as $file)
+            {
+                if ($file == '.' || $file == '..') continue;
+
+                $fullname = $fullpathselecteddir.$file;
+
+                if (is_dir($fullname))
+                {
+                    $this->nyandog($key, $fullname, $file);
+                }
+                elseif (is_file($fullname))
+                {
+                    $fullname_md5 = md5($fullname);
+                    $name = pathinfo($fullname, PATHINFO_BASENAME);
+
+                    $this->TFilePathByTitleKey[$key][$dir][$fullname_md5] = array(
+                        'name' => $name
+                        ,'path' => $fullpathselecteddir
+                        ,'fullname' => $fullname
+                        ,'fullname_md5' => $fullname_md5
+                    );
+                }
+            }
         }
     }
 }

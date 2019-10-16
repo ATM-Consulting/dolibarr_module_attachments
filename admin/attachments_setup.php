@@ -32,6 +32,7 @@ if (! $res) {
 require_once DOL_DOCUMENT_ROOT . "/core/lib/admin.lib.php";
 require_once '../lib/attachments.lib.php';
 dol_include_once('abricot/includes/lib/admin.lib.php');
+require_once DOL_DOCUMENT_ROOT.'/ecm/class/htmlecm.form.class.php';
 
 // Translations
 $langs->loadLangs(array("attachments@attachments", "admin", "other"));
@@ -112,6 +113,24 @@ setup_print_title("Parameters");
 // Example with a yes / no select
 setup_print_on_off('ATTACHMENTS_INCLUDE_PRODUCT_LINES');
 setup_print_on_off('ATTACHMENTS_INCLUDE_OBJECT_LINKED');
+
+if (!empty($conf->ecm->enabled))
+{
+    $formecm=new FormEcm($db);
+    print '<tr '.$bc[$var].'>';
+    print '<td>'.$langs->trans('ATTACHMENTS_ECM_SCANDIR').'</td>';
+    print '<td align="center" width="20">&nbsp;</td>';
+    print '<td align="right" width="400">';
+    print '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">';
+    print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+    print '<input type="hidden" name="action" value="set_ATTACHMENTS_ECM_SCANDIR">';
+    if (method_exists($formecm, 'selectAllSections')) print $formecm->selectAllSections($conf->global->ATTACHMENTS_ECM_SCANDIR, 'ATTACHMENTS_ECM_SCANDIR', 'ecm');
+    else print $formecm->select_all_sections($conf->global->ATTACHMENTS_ECM_SCANDIR, 'ATTACHMENTS_ECM_SCANDIR');
+    print '<input type="submit" class="butAction" value="'.$langs->trans("Modify").'">';
+    print '</form>';
+    print '</td></tr>';
+
+}
 
 // Example with imput
 //setup_print_input_form_part('CONSTNAME', $langs->trans('ParamLabel'));

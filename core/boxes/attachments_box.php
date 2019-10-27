@@ -62,7 +62,7 @@ class attachmentsbox extends ModeleBoxes
 
         $this->max = $max;
 
-        //include_once DOL_DOCUMENT_ROOT . "/attachments/class/attachments.class.php";
+        //dol_include_once('/attachments/class/attachments.class.php');
 
         $text = $langs->trans("MyBoxDescription", $max);
         $this->info_box_head = array(

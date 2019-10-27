@@ -111,7 +111,10 @@ class ActionsAttachments
             $hookmanager->initHooks(array('attachmentsform'));
 
             $this->current_object = $object;
-            if (!empty($conf->global->ATTACHMENTS_INCLUDE_OBJECT_LINKED)) $this->current_object->fetchObjectLinked();
+            if (!empty($conf->global->ATTACHMENTS_INCLUDE_OBJECT_LINKED)) {
+            	$this->current_object->fetchObjectLinked();
+				$this->current_object->linkedObjects['societe'][$this->current_object->fk_soc] = $this->current_object->thirdparty;
+			}
 
             if (empty($this->current_object->linkedObjects[$this->current_object->element])) $this->current_object->linkedObjects[$this->current_object->element] = array();
             array_unshift($this->current_object->linkedObjects[$this->current_object->element], $this->current_object);

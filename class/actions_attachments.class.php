@@ -54,6 +54,7 @@ class ActionsAttachments
         , 'AttachmentsTitleFactureFournisseur' => 35
         , 'AttachmentsTitleFicheInter' => 40
         , 'AttachmentsSociete' => 50
+        , 'AttachmentsTitleTask' =>60
         , 'AttachmentsTitleEcm' => 500
     );
 
@@ -69,6 +70,7 @@ class ActionsAttachments
         , 'fichinter' => 'AttachmentsTitleFicheInter'
         , 'societe' => 'AttachmentsSociete'
         , 'ecm' => 'AttachmentsTitleEcm'
+        , 'project_task' => 'AttachmentsTitleTask'
     );
 
 	public $TFilePathByTitleKey = array();
@@ -134,9 +136,40 @@ class ActionsAttachments
                 }
             }
 
+			if ($this->current_object->element == "project")
+			{
+				$this->current_object->getLinesArray($user);
+				if (!empty($this->current_object->lines))
+				{
+					$subdir = '/'.dol_sanitizeFileName($this->current_object->ref);
+					foreach ($this->current_object->lines as $line)
+					{
+						$linkObjRef = dol_sanitizeFileName($line->ref);
+						$filedir = $conf->projet->dir_output . $subdir . '/' . $linkObjRef;
+
+						$file_list=dol_dir_list($filedir, 'files', 0, '', '(\.meta|_preview.*.*\.png)$', 'date', SORT_DESC);
+
+						if (!empty($file_list))
+						{
+							$key = $this->TTileKeyByElement['project_task'];
+							foreach ($file_list as $file_info)
+							{
+								$fullname_md5 = md5($file_info['fullname']);
+								$this->TFilePathByTitleKey[$key][$linkObjRef][$fullname_md5] = array(
+									'name' => $file_info['name']
+								,'path' => $file_info['path']
+								,'fullname' => $file_info['fullname']
+								,'fullname_md5' => $fullname_md5
+								);
+							}
+						}
+					}
+				}
+			}
             // Gestion des objets standards
             foreach ($this->current_object->linkedObjects as $element => $TLinkedObject)
             {
+
                 if (empty($conf->global->ATTACHMENTS_INCLUDE_OBJECT_LINKED) && $element !== 'product' && $element !== $this->current_object->element)
                 {
                     // Si la recherche dans les objets liés n'est pas actif et qu'on est pas sur un élément "product" ou de l'objet courant, alors on passe
@@ -324,19 +357,19 @@ class ActionsAttachments
                         $(function() {
                             let attachments_button = $("<span class=\'fa fa-paperclip\' onclick=\'attachments_send()\'></span>");
                             $("#addfile").after(attachments_button);
-                            
+
                             attachments_send = function()
                             {
                                 $("#action").val("attachments_send"); // Maj de "action" pour interception côté "doActions"
                                 $("#addfile").click(); // Simulation du clique sur le bouton "Joindre ce fichier"
                             }
-                            
+
                             if (window.location.hash === "")
                             {
                                 let attachments_top = document.getElementById("formmail").offsetTop; //Getting Y of target element
                                 window.scrollTo(0, attachments_top);
                             }
-    
+
                         });
                     </script>
                 ';

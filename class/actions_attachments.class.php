@@ -156,10 +156,10 @@ class ActionsAttachments
 							{
 								$fullname_md5 = md5($file_info['fullname']);
 								$this->TFilePathByTitleKey[$key][$linkObjRef][$fullname_md5] = array(
-									'name' => $file_info['name']
-								,'path' => $file_info['path']
-								,'fullname' => $file_info['fullname']
-								,'fullname_md5' => $fullname_md5
+                                    'name' => $file_info['name']
+                                    ,'path' => $file_info['path']
+                                    ,'fullname' => $file_info['fullname']
+                                    ,'fullname_md5' => $fullname_md5
 								);
 							}
 						}
@@ -262,8 +262,8 @@ class ActionsAttachments
             elseif ($action === 'confirm_attachments_send')
             {
                 // Hack permettant de conserver le text car la méthode "get_form()" cherche uniquement dans $_POST, 2 cas particuliers
-                $_POST['message'] = $_GET['message'];
-                $_POST['subject'] = $_GET['subject'];
+//                $_POST['message'] = $_GET['message'];
+//                $_POST['subject'] = $_GET['subject']; // Hack plus nécessaire suite aux changements de la fonction "getFormConfirmAttachments" et à l'utilisation d'un formulaire en POST
 
                 $TAttachments = array();
                 foreach ($_REQUEST as $k => $v)
@@ -307,7 +307,7 @@ class ActionsAttachments
                                 {
                                     // Fichier précédemment joint et maintenant il a été décoché
                                     $formmail->remove_attached_files($k);
-                                    unlink($upload_dir_tmp.'/'.$info['name']);
+                                    if (is_file($upload_dir_tmp.'/'.$info['name'])) unlink($upload_dir_tmp.'/'.$info['name']);
                                     unset($TSelectedFileName[$k]);
                                     $TSelectedFileName = explode(';', implode(';', $TSelectedFileName));
                                 }

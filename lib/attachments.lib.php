@@ -248,6 +248,52 @@ function getFormConfirmAttachments($actionattachments, $TFilePathByTitleKey, $tr
         , '800'
     );
 
+    $formconfirm.= '
+        <script type="text/javascript">
+            function customDialogByPhTouch(uri) {
+                var p = uri.split("?");
+                var action = p[0];
+                var params = p[1].split("&");
+                var paramsGet = "";
+                var form = $(document.createElement("form")).attr({
+                    method: "POST"
+                    , id: "attachments-dialog"
+                    , enctype: "multipart/form-data"
+                });
+                $("body").append(form);
+
+                for (var i in params) {
+                    var tmp= params[i].split("=");
+                    var key = tmp[0], value = tmp[1];
+
+                    if (key === "message") {
+                        let textarea = $(document.createElement("textarea"));
+                        textarea.css({display: "none"});
+                        textarea.attr("name", "message");
+
+                        if (typeof CKEDITOR === "object" && typeof CKEDITOR.instances.message === "object") {
+                            textarea.val(CKEDITOR.instances.message.getData());
+                        } else {
+                            textarea.val(value);
+                        }
+
+                        textarea.appendTo(form);
+                    } else if (key === "subject" || key === "deliveryreceipt") {
+                        $(document.createElement("input")).attr("type", "hidden").attr("name", key).attr("value", $("#"+key).val()).appendTo(form);
+                    } else {
+                        if (paramsGet.length > 0) paramsGet+= "&";
+                        paramsGet+= key + "=" + value;
+                    }
+                }
+                form.attr("action", action + "?" + paramsGet);
+
+                setTimeout(function() { form.submit(); }, 100);
+                return false;
+            }
+        </script>
+    ';
+
+    $formconfirm = str_replace('location.href = urljump;', 'customDialogByPhTouch(urljump);', $formconfirm);
 
     return $formconfirm;
 }

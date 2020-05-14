@@ -69,13 +69,13 @@ function attachments_prepare_head(Attachments $object)
     $head[$h][1] = $langs->trans("AttachmentsCard");
     $head[$h][2] = 'card';
     $h++;
-	
+
 	// Show more tabs from modules
     // Entries must be declared in modules descriptor with line
     // $this->tabs = array('entity:+tabname:Title:@attachments:/attachments/mypage.php?id=__ID__');   to add new tab
     // $this->tabs = array('entity:-tabname:Title:@attachments:/attachments/mypage.php?id=__ID__');   to remove a tab
     complete_head_from_modules($conf, $langs, $object, $head, $h, 'attachments');
-	
+
 	return $head;
 }
 
@@ -114,40 +114,39 @@ function getFormConfirmAttachments($actionattachments, $TFilePathByTitleKey, $tr
         <div>
             <i class="fa fa-search"></i>
             <input type="text" id="attachments-item-filter" class="search-filter" data-target="" value="" placeholder="Rechercher" <span="">
-            <span id="attachments-filter-count-wrap" >'.$langs->trans('Result').': <span id="attachments-filter-count" ></span></span>    
+            <span id="attachments-filter-count-wrap" >'.$langs->trans('Result').': <span id="attachments-filter-count" ></span></span>
         </div>';
 
     $html.= '<dl id="attachments-accordion">';
-    foreach ($TFilePathByTitleKey as $titleKey => $TFilePathByRef)
-    {
-        $html.= '
+    foreach ($TFilePathByTitleKey as $titleKey => $TFilePathByRef) {
+	    $html .= '
             <dt class="title">
-                <b>'.$langs->trans($titleKey).'</b>
-                <span title="'.$langs->trans('AttachmentsSelectedOnTotalAvailable').'" class="attachments-element-selected badge badge-secondary" data-element-selected=""></span>
-                <span title="'.$langs->trans('AttachmentsFiltered').'" class="attachments-element-count badge" data-element-count=""></span>
+                <b>' . $langs->trans($titleKey) . '</b>
+                <span title="' . $langs->trans('AttachmentsSelectedOnTotalAvailable') . '" class="attachments-element-selected badge badge-secondary" data-element-selected=""></span>
+                <span title="' . $langs->trans('AttachmentsFiltered') . '" class="attachments-element-count badge" data-element-count=""></span>
             </dt>';
 
-        $html.= '<dd class="panel">';
-        foreach ($TFilePathByRef as $ref => $file_info)
-        {
-            $class = $object->ref === $ref ? 'currentobject' : '';
-            $html.= '
+	    $html .= '<dd class="panel">';
+	    if (is_array($TFilePathByRef) && count($TFilePathByRef) > 0) {
+		    foreach ($TFilePathByRef as $ref => $file_info) {
+			    $class = $object->ref === $ref ? 'currentobject' : '';
+			    $html .= '
                 <p class="subtitle">
-                    <b class="'.$class.'">'.str_repeat('&nbsp;', 4).$ref.'</b>
+                    <b class="' . $class . '">' . str_repeat('&nbsp;', 4) . $ref . '</b>
                 </p>';
-            foreach ($file_info as $info)
-            {
-                $id = 'TAttachments_'.$info['fullname_md5'];
-                $checked = isset($TSelectedFileName[$info['name']]) ? 'checked' : '';
-                $html.= '
+			    foreach ($file_info as $info) {
+				    $id = 'TAttachments_' . $info['fullname_md5'];
+				    $checked = isset($TSelectedFileName[$info['name']]) ? 'checked' : '';
+				    $html .= '
                     <div class="searchable search-match oddeven">
-                        '.str_repeat('&nbsp;', 8).'<input id="'.$id.'" name="'.$id.'" type="checkbox" '.$checked.' value="'.$info['fullname_md5'].'" class="pull-right" />
-                        <label for="'.$id.'">'.$info['name'].'</label>
+                        ' . str_repeat('&nbsp;', 8) . '<input id="' . $id . '" name="' . $id . '" type="checkbox" ' . $checked . ' value="' . $info['fullname_md5'] . '" class="pull-right" />
+                        <label for="' . $id . '">' . $info['name'] . '</label>
                     </div>';
-                $formquestion[] = array('name' => 'TAttachments_'.$info['fullname_md5']);
-            }
-        }
-        $html.= '</dd>';
+				    $formquestion[] = array('name' => 'TAttachments_' . $info['fullname_md5']);
+			    }
+		    }
+		    $html .= '</dd>';
+	    }
     }
     $html.= '</dl>';
 
@@ -162,19 +161,19 @@ function getFormConfirmAttachments($actionattachments, $TFilePathByTitleKey, $tr
             #attachments-accordion .attachments-element-selected::after {
                 content: attr(data-element-selected);
             }
-            
+
             #attachments-accordion .subtitle {
                 margin: 4px 0 8px 0;
             }
-            
+
             #attachments-accordion .searchable {
                 margin: 0 0 8px 0;
             }
-            
+
             #attachments-accordion .searchable label {
                 padding-right: 8px;
             }
-            
+
             #attachments-accordion .currentobject::before {
                 content: "*"
             }
@@ -182,7 +181,7 @@ function getFormConfirmAttachments($actionattachments, $TFilePathByTitleKey, $tr
                 color: blue;
             }
         </style>
-        
+
         <script type="text/javascript">
             $(function() {
                 $("#attachments-accordion").accordion({
@@ -190,7 +189,7 @@ function getFormConfirmAttachments($actionattachments, $TFilePathByTitleKey, $tr
                     , heightStyle: "content"
                     , collapsible: true
                 });
-                
+
                 $( document ).on("keyup", "#attachments-item-filter", function () {
                     let filter = $(this).val(), count = 0;
                     $("#attachments-accordion .searchable").each(function () {
@@ -201,25 +200,25 @@ function getFormConfirmAttachments($actionattachments, $TFilePathByTitleKey, $tr
                             count++;
                         }
                     });
-                    
+
                     $("#attachments-filter-count").text(count);
-                    
+
                     updateBadgeCount();
                 });
-                
+
                 updateBadgeCount = function () {
                     $("#attachments-accordion .attachments-element-count").each(function(i, item) {
                         let dtId = $(item).parent().attr("id");
                         let nb = $("dd[aria-labelledby="+dtId+"]").find("div.searchable.search-match").length;
                         item.dataset.elementCount = nb;
-                        
+
                         if (nb > 0) $(this).addClass("badge-warning").removeClass("badge-secondary");
                         else $(this).addClass("badge-secondary").removeClass("badge-warning");
                     });
                 };
-                
+
                 updateBadgeCount();
-                
+
                 updateBadgeSelected = function () {
                     $("#attachments-accordion .attachments-element-selected").each(function(i, item) {
                         let dtId = $(item).parent().attr("id");
@@ -228,9 +227,9 @@ function getFormConfirmAttachments($actionattachments, $TFilePathByTitleKey, $tr
                         item.dataset.elementSelected = nb_selected + " / " + nb;
                     });
                 };
-                
+
                 updateBadgeSelected();
-                
+
                 $("#attachments-accordion input[type=checkbox]").change(updateBadgeSelected);
             });
         </script>

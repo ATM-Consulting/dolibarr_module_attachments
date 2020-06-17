@@ -106,7 +106,19 @@ class ActionsAttachments
 	{
 	    global $conf, $user;
 
-	    if (in_array($action, array('presend', 'send', 'attachments_send', 'confirm_attachments_send')) && method_exists($object, 'fetchObjectLinked'))
+		$contexts = explode(':',$parameters['context']);
+		if (in_array('ticketcard',$contexts)) {
+			// le cas des tickets est particulier il faut faire une évolution pour le gérer à part
+			// Le module attachments fait l. 330 dans class/actions_attachments.class.php :
+			// unset($_POST['modelmailselected']);
+			//
+			// or, on en a besoin htdocs/ticket/card.php :
+			// $formticket->param['models_id']=GETPOST('modelmailselected', 'int');
+
+			return 0;
+		}
+
+		if (in_array($action, array('presend', 'send', 'attachments_send', 'confirm_attachments_send')) && method_exists($object, 'fetchObjectLinked'))
         {
             require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 
@@ -348,6 +360,11 @@ class ActionsAttachments
      */
 	public function getFormMail($parameters, &$object, &$action, $hookmanager)
     {
+		$contexts = explode(':',$parameters['context']);
+		if (in_array('ticketcard',$contexts)) {
+			return 0; // le cas des tickets est particulier il faut faire une évolution pour le gérer à part
+		}
+
         if (in_array($this->action, array('presend', 'send')))
         {
             if (!empty($this->TFilePathByTitleKey))

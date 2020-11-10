@@ -266,7 +266,7 @@ class ActionsAttachments
             if ($action === 'attachments_send')
             {
                 dol_include_once('attachments/lib/attachments.lib.php');
-                $this->formconfirm = getFormConfirmAttachments($this, $this->TFilePathByTitleKey, GETPOST('trackid'));
+                $this->formconfirm = getFormConfirmAttachments($this, $this->TFilePathByTitleKey, GETPOST('trackid', 'none'));
                 $action = 'presend';
                 $_POST['addfile'] = ''; // Permet de bi-passer un setEventMessage de Dolibarr
             }
@@ -290,7 +290,7 @@ class ActionsAttachments
 
                 include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
                 $formmail = new FormMail($this->db);
-                $formmail->trackid = GETPOST('trackid');
+                $formmail->trackid = GETPOST('trackid', 'none');
 
                 // Je ne peux pas me baser sur le chemin complet car une fois joint au mail, les chemins pointe vers le dossier "/temp" du user
                 $TSelectedFileName = array();

@@ -209,6 +209,12 @@ class ActionsAttachments
                     if (!empty($sub_element_to_use)) $filedir = $conf->{$element_to_use}->{$sub_element_to_use}->dir_output . $subdir . '/' . $linkObjRef;
                     else $filedir = $conf->{$element_to_use}->dir_output . $subdir . '/' . $linkObjRef;
 
+                    if ($element == 'product' && !empty($conf->global->PRODUCT_USE_OLD_PATH_FOR_PHOTO))
+					{
+						$pdir = get_exdir($linkedObject->id, 2, 0, 0, $linkedObject, 'product') . $linkedObject->id ."/photos/";
+						$filedir = $conf->product->dir_output.'/'.$pdir;
+					}
+
                     $file_list=dol_dir_list($filedir, 'files', 0, '', '(\.meta|_preview.*.*\.png)$', 'date', SORT_DESC);
 
                     if (!empty($file_list))
@@ -286,7 +292,6 @@ class ActionsAttachments
                         $TAttachments[$v] = $v;
                     }
                 }
-
 
                 include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
                 $formmail = new FormMail($this->db);

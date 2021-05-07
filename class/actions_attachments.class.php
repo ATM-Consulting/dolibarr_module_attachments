@@ -67,10 +67,11 @@ class ActionsAttachments
         , 'supplier_proposal' => 'AttachmentsTitlePropalFournisseur'
         , 'order_supplier' => 'AttachmentsTitleCommandeFournisseur'
         , 'invoice_supplier' => 'AttachmentsTitleFactureFournisseur'
-        , 'fichinter' => 'AttachmentsTitleFicheInter'
+        , 'fiechinter' => 'AttachmentsTitleFicheInter'
         , 'societe' => 'AttachmentsSociete'
         , 'ecm' => 'AttachmentsTitleEcm'
         , 'project_task' => 'AttachmentsTitleTask'
+	, 'shipping' => 'AttachmentsShipping'
     );
 
 	public $TFilePathByTitleKey = array();
@@ -193,6 +194,7 @@ class ActionsAttachments
                 if ($element === 'fichinter') $element_to_use = 'ficheinter';
                 elseif ($element === 'order_supplier') { $element_to_use = 'fournisseur'; $subdir = '/commande'; }
                 elseif ($element === 'invoice_supplier') { $element_to_use = 'fournisseur'; $sub_element_to_use = 'facture'; /* $subdir is defined in the next loop */ }
+		elseif ($element === 'shipping') {$element_to_use = 'expedition'; $subdir = '/sending';}
                 else $element_to_use = $element;
 
                 /** @var CommonObject $linkedObject */
@@ -216,7 +218,6 @@ class ActionsAttachments
 					}
 
                     $file_list=dol_dir_list($filedir, 'files', 0, '', '(\.meta|_preview.*.*\.png)$', 'date', SORT_DESC);
-
                     if (!empty($file_list))
                     {
                         $key = $this->TTileKeyByElement[$element];
@@ -451,7 +452,6 @@ class ActionsAttachments
                 {
                     $fullname_md5 = md5($fullname);
                     $name = pathinfo($fullname, PATHINFO_BASENAME);
-
                     $this->TFilePathByTitleKey[$key][$dir][$fullname_md5] = array(
                         'name' => $name
                         ,'path' => $fullpathselecteddir

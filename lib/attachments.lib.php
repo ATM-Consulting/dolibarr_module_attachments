@@ -118,6 +118,7 @@ function getFormConfirmAttachments($actionattachments, $TFilePathByTitleKey, $tr
         </div>';
 
     $html.= '<dl id="attachments-accordion">';
+
     foreach ($TFilePathByTitleKey as $titleKey => $TFilePathByRef) {
 	    $html .= '
             <dt class="title">

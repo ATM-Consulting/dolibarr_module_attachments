@@ -67,7 +67,7 @@ class ActionsAttachments
         , 'supplier_proposal' => 'AttachmentsTitlePropalFournisseur'
         , 'order_supplier' => 'AttachmentsTitleCommandeFournisseur'
         , 'invoice_supplier' => 'AttachmentsTitleFactureFournisseur'
-        , 'fiechinter' => 'AttachmentsTitleFicheInter'
+        , 'fichinter' => 'AttachmentsTitleFicheInter'
         , 'societe' => 'AttachmentsSociete'
         , 'ecm' => 'AttachmentsTitleEcm'
         , 'project_task' => 'AttachmentsTitleTask'

@@ -344,6 +344,7 @@ class ActionsAttachments
                 if ($modelmailselected != -1)
                 {
                     // Permet d'esquiver l'appel à "clear_attached_files()" dans la méthode "get_form()" @see
+                    unset($_GET['modelmailselected']);
                     unset($_POST['modelmailselected']);
                     $this->modelmailselected = $modelmailselected;
                 }

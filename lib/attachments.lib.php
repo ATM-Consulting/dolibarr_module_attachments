@@ -143,7 +143,7 @@ function getFormConfirmAttachments($actionattachments, $TFilePathByTitleKey, $tr
                         ' . str_repeat('&nbsp;', 8) . '<input id="' . $id . '" name="' . $id . '" type="checkbox" ' . $checked . ' value="' . $info['fullname_md5'] . '" class="pull-right" />
                         <label for="' . $id . '">' . $info['name'] . '</label>
                     </div>';
-				    $formquestion[] = array('name' => 'TAttachments_' . $info['fullname_md5']);
+				    $formquestion[] = array('name' => 'TAttachments_' . $info['fullname_md5'], 'type' => 'hidden');
 			    }
 		    }
 		    $html .= '</dd>';

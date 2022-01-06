@@ -22,6 +22,7 @@
  * \brief   This file is an example hook overload class file
  *          Put some comments here
  */
+require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
 
 /**
  * Class ActionsAttachments
@@ -55,6 +56,7 @@ class ActionsAttachments
 		, 'AttachmentsTitleFicheInter' => 40
 		, 'AttachmentsSociete' => 50
 		, 'AttachmentsTitleTask' =>60
+		, 'AttachmentsTitleProject' =>70
 		, 'AttachmentsTitleEcm' => 500
 	);
 
@@ -71,7 +73,8 @@ class ActionsAttachments
 		, 'societe' => 'AttachmentsSociete'
 		, 'ecm' => 'AttachmentsTitleEcm'
 		, 'project_task' => 'AttachmentsTitleTask'
-	, 'shipping' => 'AttachmentsShipping'
+		, 'project' => 'AttachmentsTitleProject'
+	    , 'shipping' => 'AttachmentsShipping'
 	);
 
 	public $TFilePathByTitleKey = array();
@@ -149,13 +152,47 @@ class ActionsAttachments
 				}
 			}
 
-			if ($this->current_object->element == "project")
+
+			if ($this->current_object->element == "project" || $this->current_object->fk_project > 0)
 			{
-				$this->current_object->getLinesArray($user);
-				if (!empty($this->current_object->lines))
+			    $project = $this->current_object;
+
+			    if ($this->current_object->fk_project > 0) {
+			        if (method_exists($this->current_object, 'fetch_projet')) {
+                        $this->current_object->fetch_projet();
+                        $project = $this->current_object->project;
+                	} else {
+                	    $project = new Project($this->db);
+                	    $project->fetch($this->current_object->fk_project);
+                	}
+			    }
+
+				$subdir = '/'.dol_sanitizeFileName($project->ref);
+				$filedir = $conf->projet->dir_output . $subdir;
+
+                $file_list=dol_dir_list($filedir, 'files', 0, '', '(\.meta|_preview.*.*\.png)$', 'date', SORT_DESC);
+				$linkObjRef = dol_sanitizeFileName($project->ref);
+
+                if (!empty($file_list))
+                {
+                    $key = $this->TTileKeyByElement['project'];
+                    foreach ($file_list as $file_info)
+                    {
+                        $fullname_md5 = md5($file_info['fullname']);
+                        $this->TFilePathByTitleKey[$key][$linkObjRef][$fullname_md5] = array(
+                            'name' => $file_info['name']
+                            ,'path' => $file_info['path']
+                            ,'fullname' => $file_info['fullname']
+                            ,'fullname_md5' => $fullname_md5
+                        );
+                    }
+                }
+
+				$project->getLinesArray($user);
+				if (!empty($project->lines))
 				{
-					$subdir = '/'.dol_sanitizeFileName($this->current_object->ref);
-					foreach ($this->current_object->lines as $line)
+					$subdir = '/'.dol_sanitizeFileName($project->ref);
+					foreach ($project->lines as $line)
 					{
 						$linkObjRef = dol_sanitizeFileName($line->ref);
 						$filedir = $conf->projet->dir_output . $subdir . '/' . $linkObjRef;
@@ -194,7 +231,7 @@ class ActionsAttachments
 				if ($element === 'fichinter') $element_to_use = 'ficheinter';
 				elseif ($element === 'order_supplier') { $element_to_use = 'fournisseur'; $subdir = '/commande'; }
 				elseif ($element === 'invoice_supplier') { $element_to_use = 'fournisseur'; $sub_element_to_use = 'facture'; /* $subdir is defined in the next loop */ }
-		elseif ($element === 'shipping') {$element_to_use = 'expedition'; $subdir = '/sending';}
+		        elseif ($element === 'shipping') {$element_to_use = 'expedition'; $subdir = '/sending';}
 				else $element_to_use = $element;
 
 				/** @var CommonObject $linkedObject */
@@ -269,7 +306,6 @@ class ActionsAttachments
 				uksort($this->TFilePathByTitleKey, array($this, 'cmp'));
 			}
 
-
 			if ($action === 'attachments_send')
 			{
 				dol_include_once('attachments/lib/attachments.lib.php');
@@ -305,7 +341,7 @@ class ActionsAttachments
 				// Set tmp user directory
 				$vardir=$conf->user->dir_output."/".$user->id;
 				$upload_dir_tmp = $vardir.'/temp';
-				if (dol_mkdir($upload_dir_tmp) >= 0)
+				if (dol_mkdir($upload_dir_tmp) >= 0 && GETPOST('confirm') == 'yes')
 				{
 					foreach ($this->TFilePathByTitleKey as $titleKey => $TFilePathByRef)
 					{

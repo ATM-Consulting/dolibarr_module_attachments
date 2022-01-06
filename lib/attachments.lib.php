@@ -129,6 +129,7 @@ function getFormConfirmAttachments($actionattachments, $TFilePathByTitleKey, $tr
 
 	    $html .= '<dd class="panel">';
 	    if (is_array($TFilePathByRef) && count($TFilePathByRef) > 0) {
+
 		    foreach ($TFilePathByRef as $ref => $file_info) {
 			    $class = $object->ref === $ref ? 'currentobject' : '';
 			    $html .= '
@@ -143,11 +144,14 @@ function getFormConfirmAttachments($actionattachments, $TFilePathByTitleKey, $tr
                         ' . str_repeat('&nbsp;', 8) . '<input id="' . $id . '" name="' . $id . '" type="checkbox" ' . $checked . ' value="' . $info['fullname_md5'] . '" class="pull-right" />
                         <label for="' . $id . '">' . $info['name'] . '</label>
                     </div>';
-				    $formquestion[] = array('name' => 'TAttachments_' . $info['fullname_md5'], 'type' => 'hidden');
 			    }
+
 		    }
+
 		    $html .= '</dd>';
+
 	    }
+
     }
     $html.= '</dl>';
 
@@ -242,8 +246,8 @@ function getFormConfirmAttachments($actionattachments, $TFilePathByTitleKey, $tr
         , '<i>'.$langs->trans('ConfirmCancelAttachmentsBody').'</i>'
         , 'confirm_attachments_send'
         , $formquestion
+        , 'yes'
         , 0
-        , 1
         , 'auto'
         , '800'
     );

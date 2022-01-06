@@ -27,6 +27,9 @@ AttachmentsTitleFactureFournisseur=Vendor invoice
 AttachmentsTitleFicheInter=Intervention
 AttachmentsSociete=Company
 AttachmentsTitleEcm=Documents (EDM)
+AttachmentsTitleTask=Tasks
+AttachmentsTitleProject=Project
+AttachmentsShipping=Shipping
 
 AttachmentsFiltered=Elements corresponding to your search term
 AttachmentsSelectedOnTotalAvailable=Number of selected elements on total available

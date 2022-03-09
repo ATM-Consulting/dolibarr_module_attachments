@@ -2,6 +2,7 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+- NEW : add attachments to agefodd formmails *09/03/2022* - 1.1.0
 
 ## Version 1.0 [ 16/12/2020 ]
 - FIX : error message in v14 due to formconfirm change *25/11/2021* - 1.0.7

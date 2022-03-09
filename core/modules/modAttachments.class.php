@@ -94,6 +94,8 @@ class modAttachments extends DolibarrModules
 		   'hooks' => array(
 		       'globalcard'
 		       , 'formmail'
+		       , 'agefodd_send_docs'
+		       , 'agefoddsessiondocumenttrainee'
            )
         );
 

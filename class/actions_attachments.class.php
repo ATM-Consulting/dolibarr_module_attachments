@@ -119,7 +119,7 @@ class ActionsAttachments
 			return 0;
 		}
 
-		if (in_array($action, array('presend', 'send', 'attachments_send', 'confirm_attachments_send')) && method_exists($object, 'fetchObjectLinked'))
+		if ((in_array($action, array('presend', 'send', 'attachments_send', 'confirm_attachments_send')) || preg_match('/^presend/', $action)) && method_exists($object, 'fetchObjectLinked'))
 		{
 			require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 
@@ -353,6 +353,7 @@ class ActionsAttachments
 			}
 
 			$this->action = $action;
+
 		}
 
 		return 0;
@@ -374,7 +375,7 @@ class ActionsAttachments
 			return 0; // le cas des tickets est particulier il faut faire une évolution pour le gérer à part
 		}
 
-		if (in_array($this->action, array('presend', 'send')))
+		if (in_array($this->action, array('presend', 'send')) || preg_match('/^presend/', $this->action))
 		{
 			if (!empty($this->TFilePathByTitleKey))
 			{

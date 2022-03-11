@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+
+
+
+## Version 1.1 [ 1/03/2022]
 - NEW : add attachments to agefodd formmails *09/03/2022* - 1.1.0
 
 ## Version 1.0 [ 16/12/2020 ]

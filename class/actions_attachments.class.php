@@ -346,8 +346,14 @@ class ActionsAttachments
 				if ($modelmailselected != -1)
 				{
 					// Permet d'esquiver l'appel à "clear_attached_files()" dans la méthode "get_form()" @see
-					unset($_GET['modelmailselected']);
-					unset($_POST['modelmailselected']);
+
+					/*
+					 * lignes ci-dessous en commentaire : Permet de ne pas avoir l'attachement automatique de la PJ sur les modèles n'en possédant pas
+					 * TODO : Trouver une solution afin que "clear_attached_files()" puisse ne supprimer que les fichiers ajoutés en automatique
+					 */
+
+					//unset($_GET['modelmailselected']);
+					//unset($_POST['modelmailselected']);
 					$this->modelmailselected = $modelmailselected;
 				}
 			}

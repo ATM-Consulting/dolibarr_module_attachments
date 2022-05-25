@@ -2,7 +2,10 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
-- FIX : Permet de ne pas avoir l'attachement automatique de la PJ sur les modèles n'en possédant pas *25/05/2022* 1.1.1
+
+- FIX : Permet de ne pas avoir l'attachement automatique de la PJ sur les modèles n'en possédant pas *25/05/2022* 1.2.1
+- NEW : Ajout de la class TechATM pour l'affichage de la page "A propos" *11/05/2022* 1.2.0
+
 
 
 ## Version 1.1 [ 1/03/2022]

@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 
 ## Version 1.2
 
+- FIX : Module icon  *25/07/2022* 1.2.1
 - NEW : Ajout de la class TechATM pour l'affichage de la page "A propos" *11/05/2022* 1.2.0
 
 ## Version 1.1

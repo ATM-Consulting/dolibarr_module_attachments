@@ -3,13 +3,17 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-- FIX : Permet de ne pas avoir l'attachement automatique de la PJ sur les modèles n'en possédant pas *25/05/2022* 1.2.1
-- NEW : Ajout de la class TechATM pour l'affichage de la page "A propos" *11/05/2022* 1.2.0
+
+
+## Version 1.3
+
+- FIX : Module icon  *25/07/2022* 1.3.2
+- FIX : Permet de ne pas avoir l'attachement automatique de la PJ sur les modèles n'en possédant pas *25/05/2022* 1.3.1
+- NEW : Ajout de la class TechATM pour l'affichage de la page "A propos" *11/05/2022* 1.3.0
 
 ## Version 1.2
 
 - FIX: Compatibility V16 - Family - *03/06/2022* - 1.2.2
-- FIX : Module icon  *25/07/2022* 1.2.1
 - NEW : Ajout de la class TechATM pour l'affichage de la page "A propos" *11/05/2022* 1.2.0
 
 ## Version 1.1

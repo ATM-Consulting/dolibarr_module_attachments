@@ -49,6 +49,7 @@ function attachmentsAdminPrepareHead()
     //$this->tabs = array(
     //	'entity:-tabname:Title:@attachments:/attachments/mypage.php?id=__ID__'
     //); // to remove a tab
+	$object = new stdClass;
     complete_head_from_modules($conf, $langs, $object, $head, $h, 'attachments');
 
     return $head;

@@ -128,7 +128,9 @@ class ActionsAttachments
 			$this->current_object = $object;
 			if (!empty($conf->global->ATTACHMENTS_INCLUDE_OBJECT_LINKED)) {
 				$this->current_object->fetchObjectLinked();
-				$this->current_object->linkedObjects['societe'][$this->current_object->fk_soc] = $this->current_object->thirdparty;
+				if(!empty($this->current_object->fk_soc)) $fk_soc = $this->current_object->fk_soc;
+				else $fk_soc = $this->current_object->socid;
+				$this->current_object->linkedObjects['societe'][$fk_soc] = $this->current_object->thirdparty;
 			}
 
 			if (empty($this->current_object->linkedObjects[$this->current_object->element])) $this->current_object->linkedObjects[$this->current_object->element] = array();

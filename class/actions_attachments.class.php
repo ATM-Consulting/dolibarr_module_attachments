@@ -142,6 +142,7 @@ class ActionsAttachments
 				{
 					if (!empty($line->fk_product) && !isset($this->current_object->linkedObjects['product'][$line->fk_product]))
 					{
+						require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 						$product = new Product($this->db);
 						if ($product->fetch($line->fk_product) > 0)
 						{

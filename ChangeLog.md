@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 
 ## Version 1.3
 
+- FIX : Compat mass action  *20/06/2023* 1.3.4
 - FIX : Compat V17  *20/01/2023* 1.3.3
 - FIX : Module icon  *25/07/2022* 1.3.2
 - FIX : Permet de ne pas avoir l'attachement automatique de la PJ sur les modèles n'en possédant pas *25/05/2022* 1.3.1

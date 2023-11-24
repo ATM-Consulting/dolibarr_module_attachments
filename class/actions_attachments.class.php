@@ -125,7 +125,7 @@ class ActionsAttachments
 			$hookmanager->initHooks(array('attachmentsform'));
 
 			$this->current_object = $object;
-			if (!empty($conf->global->ATTACHMENTS_INCLUDE_OBJECT_LINKED)) {
+			if (getDolGlobalString('ATTACHMENTS_INCLUDE_OBJECT_LINKED')) {
 				$this->current_object->fetchObjectLinked();
 				if(!empty($this->current_object->fk_soc)) $fk_soc = $this->current_object->fk_soc;
 				else $fk_soc = $this->current_object->socid;
@@ -135,7 +135,7 @@ class ActionsAttachments
 			if (empty($this->current_object->linkedObjects[$this->current_object->element])) $this->current_object->linkedObjects[$this->current_object->element] = array();
 			array_unshift($this->current_object->linkedObjects[$this->current_object->element], $this->current_object);
 
-			if (!empty($conf->global->ATTACHMENTS_INCLUDE_PRODUCT_LINES) && !empty($this->current_object->lines))
+			if (getDolGlobalString('ATTACHMENTS_INCLUDE_PRODUCT_LINES') && !empty($this->current_object->lines))
 			{
 				foreach ($this->current_object->lines as $line)
 				{
@@ -185,7 +185,7 @@ class ActionsAttachments
 			foreach ($this->current_object->linkedObjects as $element => $TLinkedObject)
 			{
 
-				if (empty($conf->global->ATTACHMENTS_INCLUDE_OBJECT_LINKED) && $element !== 'product' && $element !== $this->current_object->element)
+				if (!getDolGlobalString('ATTACHMENTS_INCLUDE_OBJECT_LINKED') && $element !== 'product' && $element !== $this->current_object->element)
 				{
 					// Si la recherche dans les objets liés n'est pas actif et qu'on est pas sur un élément "product" ou de l'objet courant, alors on passe
 					continue;
@@ -213,7 +213,7 @@ class ActionsAttachments
 					if (!empty($sub_element_to_use)) $filedir = $conf->{$element_to_use}->{$sub_element_to_use}->dir_output . $subdir . '/' . $linkObjRef;
 					else $filedir = $conf->{$element_to_use}->dir_output . $subdir . '/' . $linkObjRef;
 
-					if ($element == 'product' && !empty($conf->global->PRODUCT_USE_OLD_PATH_FOR_PHOTO))
+					if ($element == 'product' && getDolGlobalString('PRODUCT_USE_OLD_PATH_FOR_PHOTO'))
 					{
 						$pdir = get_exdir($linkedObject->id, 2, 0, 0, $linkedObject, 'product') . $linkedObject->id ."/photos/";
 						$filedir = $conf->product->dir_output.'/'.$pdir;
@@ -237,11 +237,11 @@ class ActionsAttachments
 				}
 			}
 
-			if (!empty($conf->ecm->enabled) && $conf->global->ATTACHMENTS_ECM_SCANDIR > 0)
+			if (!empty($conf->ecm->enabled) && getDolGlobalInt('ATTACHMENTS_ECM_SCANDIR') > 0)
 			{
 				require_once DOL_DOCUMENT_ROOT.'/ecm/class/ecmdirectory.class.php';
 				$ecmdir = new EcmDirectory($this->db);
-				if ($ecmdir->fetch($conf->global->ATTACHMENTS_ECM_SCANDIR) > 0)
+				if ($ecmdir->fetch(getDolGlobalInt('ATTACHMENTS_ECM_SCANDIR')) > 0)
 				{
 					$fullpathselecteddir = $conf->ecm->dir_output.'/'.$ecmdir->getRelativePath();
 					$key = $this->TTileKeyByElement['ecm'];

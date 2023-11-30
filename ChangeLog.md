@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 
 
 ## Version 1.4
-
+-FIX : MIN PHP/DOLIBARR  - *30/11/2023* - 1.4.1  
 - NEW : compatV19 - *24/11/2023* 1.4.0  
 
 ## Version 1.3

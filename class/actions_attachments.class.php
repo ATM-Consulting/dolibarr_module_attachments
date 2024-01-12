@@ -128,8 +128,8 @@ class ActionsAttachments extends \attachments\RetroCompatCommonHookActions
 			$this->current_object = $object;
 			if (getDolGlobalString('ATTACHMENTS_INCLUDE_OBJECT_LINKED')) {
 				$this->current_object->fetchObjectLinked();
-				if(!empty($this->current_object->fk_soc)) $fk_soc = $this->current_object->fk_soc;
-				else $fk_soc = $this->current_object->socid;
+				if(!empty($this->current_object->fk_soc)) $fk_soc = $this->current_object->fk_soc ?? 0;
+				else $fk_soc = $this->current_object->socid ?? 0;
 				$this->current_object->linkedObjects['societe'][$fk_soc] = $this->current_object->thirdparty;
 			}
 
@@ -197,12 +197,24 @@ class ActionsAttachments extends \attachments\RetroCompatCommonHookActions
 				if ($element === 'fichinter') $element_to_use = 'ficheinter';
 				elseif ($element === 'order_supplier') { $element_to_use = 'fournisseur'; $subdir = '/commande'; }
 				elseif ($element === 'invoice_supplier') { $element_to_use = 'fournisseur'; $sub_element_to_use = 'facture'; /* $subdir is defined in the next loop */ }
-		elseif ($element === 'shipping') {$element_to_use = 'expedition'; $subdir = '/sending';}
-				else $element_to_use = $element;
+				elseif ($element === 'shipping') {$element_to_use = 'expedition'; $subdir = '/sending';}
+				else if(strpos($element, '_') !== false){
+					$part = explode('_', $element);
+					if(count($part)>1){
+						$element_to_use = $part[0];
+						$sub_element_to_use = $part[1];
+					}
+					else { $element_to_use = $element;}
+				}
+				else { $element_to_use = $element; }
 
 				/** @var CommonObject $linkedObject */
 				foreach ($TLinkedObject as $linkedObject)
 				{
+					if(empty($linkedObject)){
+						continue;
+					}
+
 					// Documents
 					$linkObjRef = dol_sanitizeFileName($linkedObject->ref);
 					if ($element == 'societe') $linkObjRefKey = $linkedObject->nom;
@@ -211,8 +223,17 @@ class ActionsAttachments extends \attachments\RetroCompatCommonHookActions
 					if ($element === 'invoice_supplier') $subdir = '/'.get_exdir($linkedObject->id, 2, 0, 0, $linkedObject, 'invoice_supplier');
 
 					// TODO $element doit être faussé en fonction du type de l'objet
-					if (!empty($sub_element_to_use)) $filedir = $conf->{$element_to_use}->{$sub_element_to_use}->dir_output . $subdir . '/' . $linkObjRef;
-					else $filedir = $conf->{$element_to_use}->dir_output . $subdir . '/' . $linkObjRef;
+					// TODO : John compat PHP 8.2 : Attention génère des erreurs si objects incompatible
+					//  J'ai pris le partie de skip si incompatible.
+					if (!empty($sub_element_to_use) && !empty($conf->{$element_to_use}) && !empty($conf->{$element_to_use}->{$sub_element_to_use})) {
+						$filedir = $conf->{$element_to_use}->{$sub_element_to_use}->dir_output . $subdir . '/' . $linkObjRef;
+					}
+					elseif(!empty( $conf->{$element_to_use}->dir_output)){
+						$filedir = $conf->{$element_to_use}->dir_output . $subdir . '/' . $linkObjRef;
+					}
+					else{
+						continue;
+					}
 
 					if ($element == 'product' && getDolGlobalString('PRODUCT_USE_OLD_PATH_FOR_PHOTO'))
 					{

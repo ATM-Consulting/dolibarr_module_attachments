@@ -26,7 +26,8 @@
 /**
  * Class ActionsAttachments
  */
-class ActionsAttachments
+require_once __DIR__.'/../backport/v19/core/class/commonhookactions.class.php';
+class ActionsAttachments extends \attachments\RetroCompatCommonHookActions
 {
 	/**
 	 * @var array Hook results. Propagated to $hookmanager->resArray for later reuse
@@ -118,28 +119,30 @@ class ActionsAttachments
 
 			return 0;
 		}
-
-		if ((in_array($action, array('presend', 'send', 'attachments_send', 'confirm_attachments_send')) || preg_match('/^presend/', $action)) && method_exists($object, 'fetchObjectLinked'))
+		if ((in_array($action, array('presend', 'send', 'attachments_send', 'confirm_attachments_send', 'confirm_sendmassmail')) || preg_match('/^presend/', $action)) && method_exists($object, 'fetchObjectLinked'))
 		{
 			require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 
 			$hookmanager->initHooks(array('attachmentsform'));
 
 			$this->current_object = $object;
-			if (!empty($conf->global->ATTACHMENTS_INCLUDE_OBJECT_LINKED)) {
+			if (getDolGlobalString('ATTACHMENTS_INCLUDE_OBJECT_LINKED')) {
 				$this->current_object->fetchObjectLinked();
-				$this->current_object->linkedObjects['societe'][$this->current_object->fk_soc] = $this->current_object->thirdparty;
+				if(!empty($this->current_object->fk_soc)) $fk_soc = $this->current_object->fk_soc ?? 0;
+				else $fk_soc = $this->current_object->socid ?? 0;
+				$this->current_object->linkedObjects['societe'][$fk_soc] = $this->current_object->thirdparty;
 			}
 
 			if (empty($this->current_object->linkedObjects[$this->current_object->element])) $this->current_object->linkedObjects[$this->current_object->element] = array();
 			array_unshift($this->current_object->linkedObjects[$this->current_object->element], $this->current_object);
 
-			if (!empty($conf->global->ATTACHMENTS_INCLUDE_PRODUCT_LINES) && !empty($this->current_object->lines))
+			if (getDolGlobalString('ATTACHMENTS_INCLUDE_PRODUCT_LINES') && !empty($this->current_object->lines))
 			{
 				foreach ($this->current_object->lines as $line)
 				{
 					if (!empty($line->fk_product) && !isset($this->current_object->linkedObjects['product'][$line->fk_product]))
 					{
+						require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 						$product = new Product($this->db);
 						if ($product->fetch($line->fk_product) > 0)
 						{
@@ -183,7 +186,7 @@ class ActionsAttachments
 			foreach ($this->current_object->linkedObjects as $element => $TLinkedObject)
 			{
 
-				if (empty($conf->global->ATTACHMENTS_INCLUDE_OBJECT_LINKED) && $element !== 'product' && $element !== $this->current_object->element)
+				if (!getDolGlobalString('ATTACHMENTS_INCLUDE_OBJECT_LINKED') && $element !== 'product' && $element !== $this->current_object->element)
 				{
 					// Si la recherche dans les objets liés n'est pas actif et qu'on est pas sur un élément "product" ou de l'objet courant, alors on passe
 					continue;
@@ -194,12 +197,24 @@ class ActionsAttachments
 				if ($element === 'fichinter') $element_to_use = 'ficheinter';
 				elseif ($element === 'order_supplier') { $element_to_use = 'fournisseur'; $subdir = '/commande'; }
 				elseif ($element === 'invoice_supplier') { $element_to_use = 'fournisseur'; $sub_element_to_use = 'facture'; /* $subdir is defined in the next loop */ }
-		elseif ($element === 'shipping') {$element_to_use = 'expedition'; $subdir = '/sending';}
-				else $element_to_use = $element;
+				elseif ($element === 'shipping') {$element_to_use = 'expedition'; $subdir = '/sending';}
+				else if(strpos($element, '_') !== false){
+					$part = explode('_', $element);
+					if(count($part)>1){
+						$element_to_use = $part[0];
+						$sub_element_to_use = $part[1];
+					}
+					else { $element_to_use = $element;}
+				}
+				else { $element_to_use = $element; }
 
 				/** @var CommonObject $linkedObject */
 				foreach ($TLinkedObject as $linkedObject)
 				{
+					if(empty($linkedObject)){
+						continue;
+					}
+
 					// Documents
 					$linkObjRef = dol_sanitizeFileName($linkedObject->ref);
 					if ($element == 'societe') $linkObjRefKey = $linkedObject->nom;
@@ -208,10 +223,19 @@ class ActionsAttachments
 					if ($element === 'invoice_supplier') $subdir = '/'.get_exdir($linkedObject->id, 2, 0, 0, $linkedObject, 'invoice_supplier');
 
 					// TODO $element doit être faussé en fonction du type de l'objet
-					if (!empty($sub_element_to_use)) $filedir = $conf->{$element_to_use}->{$sub_element_to_use}->dir_output . $subdir . '/' . $linkObjRef;
-					else $filedir = $conf->{$element_to_use}->dir_output . $subdir . '/' . $linkObjRef;
+					// TODO : John compat PHP 8.2 : Attention génère des erreurs si objects incompatible
+					//  J'ai pris le partie de skip si incompatible.
+					if (!empty($sub_element_to_use) && !empty($conf->{$element_to_use}) && !empty($conf->{$element_to_use}->{$sub_element_to_use})) {
+						$filedir = $conf->{$element_to_use}->{$sub_element_to_use}->dir_output . $subdir . '/' . $linkObjRef;
+					}
+					elseif(!empty( $conf->{$element_to_use}->dir_output)){
+						$filedir = $conf->{$element_to_use}->dir_output . $subdir . '/' . $linkObjRef;
+					}
+					else{
+						continue;
+					}
 
-					if ($element == 'product' && !empty($conf->global->PRODUCT_USE_OLD_PATH_FOR_PHOTO))
+					if ($element == 'product' && getDolGlobalString('PRODUCT_USE_OLD_PATH_FOR_PHOTO'))
 					{
 						$pdir = get_exdir($linkedObject->id, 2, 0, 0, $linkedObject, 'product') . $linkedObject->id ."/photos/";
 						$filedir = $conf->product->dir_output.'/'.$pdir;
@@ -235,11 +259,11 @@ class ActionsAttachments
 				}
 			}
 
-			if (!empty($conf->ecm->enabled) && $conf->global->ATTACHMENTS_ECM_SCANDIR > 0)
+			if (!empty($conf->ecm->enabled) && getDolGlobalInt('ATTACHMENTS_ECM_SCANDIR') > 0)
 			{
 				require_once DOL_DOCUMENT_ROOT.'/ecm/class/ecmdirectory.class.php';
 				$ecmdir = new EcmDirectory($this->db);
-				if ($ecmdir->fetch($conf->global->ATTACHMENTS_ECM_SCANDIR) > 0)
+				if ($ecmdir->fetch(getDolGlobalInt('ATTACHMENTS_ECM_SCANDIR')) > 0)
 				{
 					$fullpathselecteddir = $conf->ecm->dir_output.'/'.$ecmdir->getRelativePath();
 					$key = $this->TTileKeyByElement['ecm'];
@@ -346,8 +370,16 @@ class ActionsAttachments
 				if ($modelmailselected != -1)
 				{
 					// Permet d'esquiver l'appel à "clear_attached_files()" dans la méthode "get_form()" @see
-					unset($_GET['modelmailselected']);
-					unset($_POST['modelmailselected']);
+
+					/*
+					 * lignes ci-dessous en commentaire : Permet de ne pas avoir l'attachement automatique de la PJ sur les modèles n'en possédant pas
+					 * TODO : Trouver une solution afin que "clear_attached_files()" puisse ne supprimer que les fichiers ajoutés en automatique.
+					 *  FIX limité à aux versions inférieur à 14, à modifier en conséquence si besoin.
+					 */
+					if (intval(DOL_VERSION) < 14){
+						unset($_GET['modelmailselected']);
+						unset($_POST['modelmailselected']);
+					}
 					$this->modelmailselected = $modelmailselected;
 				}
 			}
@@ -355,7 +387,6 @@ class ActionsAttachments
 			$this->action = $action;
 
 		}
-
 		return 0;
 	}
 
@@ -375,7 +406,7 @@ class ActionsAttachments
 			return 0; // le cas des tickets est particulier il faut faire une évolution pour le gérer à part
 		}
 
-		if (in_array($this->action, array('presend', 'send')) || preg_match('/^presend/', $this->action))
+		if (in_array($this->action, array('presend', 'send', 'confirm_sendmassmail')) || preg_match('/^presend/', $this->action))
 		{
 			if (!empty($this->TFilePathByTitleKey))
 			{

@@ -2,21 +2,37 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+
+
+
+## Release 1.4
+
+- FIX : PHP 8.2 Compatibility and object compatibility - *12/01/2023* - 1.4.2
+- FIX : MIN PHP/DOLIBARR  - *30/11/2023* - 1.4.1  
+- NEW : compatV19 - *24/11/2023* 1.4.0  
+
+## Release 1.3
+
+- FIX : Compat mass action  *20/06/2023* 1.3.4
+- FIX : Compat V17  *20/01/2023* 1.3.3
+- FIX : Module icon  *25/07/2022* 1.3.2
+- FIX : Permet de ne pas avoir l'attachement automatique de la PJ sur les modèles n'en possédant pas *25/05/2022* 1.3.1
+- NEW : Ajout de la class TechATM pour l'affichage de la page "A propos" *11/05/2022* 1.3.0
+
+## Release 1.2
+
+- FIX: Compatibility V16 - Family - *03/06/2022* - 1.2.2
 - NEW : Ajout de la class TechATM pour l'affichage de la page "A propos" *11/05/2022* 1.2.0
 
+## Release 1.1
 
-## Version 1.1 [ 1/03/2022]
 - NEW : add attachments to agefodd formmails *09/03/2022* - 1.1.0
 
-## Version 1.0 [ 16/12/2020 ]
+## Release 1.0
 - FIX : error message in v14 due to formconfirm change *25/11/2021* - 1.0.7
 - FIX : warning (foreach over non-arrays) *20/10/2021* - 1.0.6
 - FIX : v14 compatibility (only change is in module descriptor) *29/06/2021* - 1.0.5
 - FIX : FIX clear attached files in mail using template *08/06/2021* - 1.0.5
 - FIX : attachment didnt handle shipping *07/05/2021* - 1.0.4
 - FIX : attachment should manage PRODUCT_USE_OLD_PATH_FOR_PHOTO *23/04/2021* - 1.0.3
-
-
-### Fix 
-
 - Remove unused Box

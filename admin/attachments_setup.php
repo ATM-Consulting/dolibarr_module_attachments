@@ -124,8 +124,8 @@ if (!empty($conf->ecm->enabled))
     print '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">';
     print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
     print '<input type="hidden" name="action" value="set_ATTACHMENTS_ECM_SCANDIR">';
-    if (method_exists($formecm, 'selectAllSections')) print $formecm->selectAllSections($conf->global->ATTACHMENTS_ECM_SCANDIR, 'ATTACHMENTS_ECM_SCANDIR', 'ecm');
-    else print $formecm->select_all_sections($conf->global->ATTACHMENTS_ECM_SCANDIR, 'ATTACHMENTS_ECM_SCANDIR');
+    if (method_exists($formecm, 'selectAllSections')) print $formecm->selectAllSections(getDolGlobalString('ATTACHMENTS_ECM_SCANDIR'), 'ATTACHMENTS_ECM_SCANDIR', 'ecm');
+    else print $formecm->select_all_sections(getDolGlobalString('ATTACHMENTS_ECM_SCANDIR'), 'ATTACHMENTS_ECM_SCANDIR');
     print '<input type="submit" class="butAction" value="'.$langs->trans("Modify").'">';
     print '</form>';
     print '</td></tr>';

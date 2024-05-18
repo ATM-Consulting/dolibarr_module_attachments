@@ -12,6 +12,7 @@ AbricotNeedUpdate = The 'Abricot' module need to be update
 # SETUP
 ATTACHMENTS_INCLUDE_PRODUCT_LINES = Search files related to products /services of the current document
 ATTACHMENTS_INCLUDE_OBJECT_LINKED = Search files related to the linked objects of the current document
+ATTACHMENTS_INCLUDE_PROJECT_LINKED = Search files related to the linked project of the current document (requires activation of previous option)
 ATTACHMENTS_ECM_SCANDIR = Search files in the following folder
 
 # FORMCONFIRM
@@ -28,8 +29,9 @@ AttachmentsTitleFactureFournisseur = Vendor Invoice
 AttachmentsTitleFicheInter = Intervention
 AttachmentsSociete = Company
 AttachmentsTitleEcm = Documents (EDM)
-AttachmentsShipping = Shipping
+AttachmentsTitleProject = Project
 AttachmentsTitleTask = Task
+AttachmentsShipping = Shipping
 
 AttachmentsFiltered = Elements corresponding to your search term
 AttachmentsSelectedOnTotalAvailable = Number of selected elements on total available

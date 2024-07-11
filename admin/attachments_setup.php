@@ -114,7 +114,7 @@ setup_print_title("Parameters");
 setup_print_on_off('ATTACHMENTS_INCLUDE_PRODUCT_LINES');
 setup_print_on_off('ATTACHMENTS_INCLUDE_OBJECT_LINKED');
 
-if (!empty($conf->ecm->enabled))
+if (isModEnabled('ecm'))
 {
     $formecm=new FormEcm($db);
     print '<tr '.$bc[$var].'>';

@@ -259,7 +259,7 @@ class ActionsAttachments extends \attachments\RetroCompatCommonHookActions
 				}
 			}
 
-			if (!empty($conf->ecm->enabled) && getDolGlobalInt('ATTACHMENTS_ECM_SCANDIR') > 0)
+			if (isModEnabled('ecm') && getDolGlobalInt('ATTACHMENTS_ECM_SCANDIR') > 0)
 			{
 				require_once DOL_DOCUMENT_ROOT.'/ecm/class/ecmdirectory.class.php';
 				$ecmdir = new EcmDirectory($this->db);

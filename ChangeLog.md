@@ -7,8 +7,7 @@ All notable changes to this project will be documented in this file.
 
 ## Release 1.5
 
-- FIX : Compat v20 - *23/07/2024* - 1.5.0
-  Changed Dolibarr compatibility range to 16 min - 20 max
+- FIX : Compat v20 - Changed Dolibarr compatibility range to 16 min - 20 max - *23/07/2024* - 1.5.0
 
 ## Release 1.4
 

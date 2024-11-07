@@ -27,6 +27,8 @@
  * Class ActionsAttachments
  */
 require_once __DIR__.'/../backport/v19/core/class/commonhookactions.class.php';
+require_once DOL_DOCUMENT_ROOT.'/comm/propal/class/propal.class.php';
+require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
 class ActionsAttachments extends \attachments\RetroCompatCommonHookActions
 {
 	/**
@@ -55,7 +57,8 @@ class ActionsAttachments extends \attachments\RetroCompatCommonHookActions
 		, 'AttachmentsTitleFactureFournisseur' => 35
 		, 'AttachmentsTitleFicheInter' => 40
 		, 'AttachmentsSociete' => 50
-		, 'AttachmentsTitleTask' =>60
+		, 'AttachmentsTitleProject' => 55
+		, 'AttachmentsTitleTask' => 60
 		, 'AttachmentsTitleEcm' => 500
 	);
 
@@ -71,6 +74,7 @@ class ActionsAttachments extends \attachments\RetroCompatCommonHookActions
 		, 'fichinter' => 'AttachmentsTitleFicheInter'
 		, 'societe' => 'AttachmentsSociete'
 		, 'ecm' => 'AttachmentsTitleEcm'
+		, 'project' => 'AttachmentsTitleProject'
 		, 'project_task' => 'AttachmentsTitleTask'
 	, 'shipping' => 'AttachmentsShipping'
 	);
@@ -127,10 +131,20 @@ class ActionsAttachments extends \attachments\RetroCompatCommonHookActions
 
 			$this->current_object = $object;
 			if (getDolGlobalString('ATTACHMENTS_INCLUDE_OBJECT_LINKED')) {
+				if (getDolGlobalString('ATTACHMENTS_INCLUDE_PROJECT_LINKED') && !empty($this->current_object->fk_project)) {
+					$sql	= 'INSERT INTO '.MAIN_DB_PREFIX.'element_element (fk_source, sourcetype, fk_target, targettype) VALUES ('.$this->current_object->id.', "'.$this->current_object->element.'", '.$this->current_object->fk_project.', "project")';
+					$resql	= $this->db->query($sql);
+					$this->db->free($resql);
+				}
 				$this->current_object->fetchObjectLinked();
 				if(!empty($this->current_object->fk_soc)) $fk_soc = $this->current_object->fk_soc ?? 0;
 				else $fk_soc = $this->current_object->socid ?? 0;
 				$this->current_object->linkedObjects['societe'][$fk_soc] = $this->current_object->thirdparty;
+				if (getDolGlobalString('ATTACHMENTS_INCLUDE_PROJECT_LINKED') && !empty($this->current_object->fk_project)) {
+					$sql	= 'DELETE FROM '.MAIN_DB_PREFIX.'element_element WHERE fk_source = '.$this->current_object->id.' AND sourcetype LIKE "'.$this->current_object->element.'" AND fk_target = '.$this->current_object->fk_project.' AND targettype LIKE "project"';
+					$resql	= $this->db->query($sql);
+					$this->db->free($resql);
+				}
 			}
 
 			if (empty($this->current_object->linkedObjects[$this->current_object->element])) $this->current_object->linkedObjects[$this->current_object->element] = array();
@@ -181,6 +195,84 @@ class ActionsAttachments extends \attachments\RetroCompatCommonHookActions
 						}
 					}
 				}
+				// Propal linked to the project
+				$staticPropal	= new Propal($this->db);
+				$listPropals	= $this->current_object->get_element_list('propal', 'propal', 'datep', '', '', 'fk_projet');
+				if (is_array($listPropals) && count($listPropals) > 0) {
+					$baseDirPropal	= !empty($conf->propal->multidir_output[$conf->entity]) ? $conf->propal->multidir_output[$conf->entity] : $conf->propal->dir_output;
+					$num			= count($listPropals);
+					for ($p = 0; $p < $num; $p++) {
+						$tmp		= explode('_', $listPropals[$p]);
+						$idofpropal	= $tmp[0];
+						$staticPropal->fetch($idofpropal);
+						$propalRef	= dol_sanitizeFileName($staticPropal->ref);
+						$dirPropal	= $baseDirPropal.'/'.$propalRef;
+						$file_list	= dol_dir_list($dirPropal, 'files', 0, '', '(\.meta|_preview.*.*\.png)$', 'date', SORT_DESC);
+						if (!empty($file_list)) {
+							$key	= $this->TTileKeyByElement['propal'];
+							foreach ($file_list as $file_info) {
+								$fullname_md5												= md5($file_info['fullname']);
+								$this->TFilePathByTitleKey[$key][$propalRef][$fullname_md5]	= array('name' => $file_info['name'],
+																									'path' => $file_info['path'],
+																									'fullname' => $file_info['fullname'],
+																									'fullname_md5' => $fullname_md5
+																									);
+							}
+						}
+					}
+				}
+				// Order linked to the project
+				$staticOrder	= new Commande($this->db);
+				$listOrders	= $this->current_object->get_element_list('commande', 'commande', 'date_commande', '', '', 'fk_projet');
+				if (is_array($listOrders) && count($listOrders) > 0) {
+					$baseDirOrder	= !empty($conf->commande->multidir_output[$conf->entity]) ? $conf->commande->multidir_output[$conf->entity] : $conf->commande->dir_output;
+					$num			= count($listOrders);
+					for ($p = 0; $p < $num; $p++) {
+						$tmp		= explode('_', $listOrders[$p]);
+						$idoforder	= $tmp[0];
+						$staticOrder->fetch($idoforder);
+						$orderRef	= dol_sanitizeFileName($staticOrder->ref);
+						$dirOrder	= $baseDirOrder.'/'.$orderRef;
+						$file_list	= dol_dir_list($dirOrder, 'files', 0, '', '(\.meta|_preview.*.*\.png)$', 'date', SORT_DESC);
+						if (!empty($file_list)) {
+							$key	= $this->TTileKeyByElement['commande'];
+							foreach ($file_list as $file_info) {
+								$fullname_md5												= md5($file_info['fullname']);
+								$this->TFilePathByTitleKey[$key][$orderRef][$fullname_md5]	= array('name' => $file_info['name'],
+																									'path' => $file_info['path'],
+																									'fullname' => $file_info['fullname'],
+																									'fullname_md5' => $fullname_md5
+																									);
+							}
+						}
+					}
+				}
+				// Invoice linked to the project
+				$staticInvoice	= new Facture($this->db);
+				$listInvoices	= $this->current_object->get_element_list('facture', 'facture', 'datef', '', '', 'fk_projet');
+				if (is_array($listInvoices) && count($listInvoices) > 0) {
+					$baseDirInvoice	= !empty($conf->facture->multidir_output[$conf->entity]) ? $conf->facture->multidir_output[$conf->entity] : $conf->facture->dir_output;
+					$num			= count($listInvoices);
+					for ($p = 0; $p < $num; $p++) {
+						$tmp			= explode('_', $listInvoices[$p]);
+						$idofInvoice	= $tmp[0];
+						$staticInvoice->fetch($idofInvoice);
+						$InvoiceRef		= dol_sanitizeFileName($staticInvoice->ref);
+						$dirInvoice		= $baseDirInvoice.'/'.$InvoiceRef;
+						$file_list		= dol_dir_list($dirInvoice, 'files', 0, '', '(\.meta|_preview.*.*\.png)$', 'date', SORT_DESC);
+						if (!empty($file_list)) {
+							$key	= $this->TTileKeyByElement['facture'];
+							foreach ($file_list as $file_info) {
+								$fullname_md5													= md5($file_info['fullname']);
+								$this->TFilePathByTitleKey[$key][$InvoiceRef][$fullname_md5]	= array('name' => $file_info['name'],
+																									'path' => $file_info['path'],
+																									'fullname' => $file_info['fullname'],
+																									'fullname_md5' => $fullname_md5
+																									);
+							}
+						}
+					}
+				}
 			}
 			// Gestion des objets standards
 			foreach ($this->current_object->linkedObjects as $element => $TLinkedObject)
@@ -195,6 +287,7 @@ class ActionsAttachments extends \attachments\RetroCompatCommonHookActions
 				$sub_element_to_use = '';
 				$subdir = '';
 				if ($element === 'fichinter') $element_to_use = 'ficheinter';
+				elseif ($element === 'project')	$element_to_use = 'projet';
 				elseif ($element === 'order_supplier') { $element_to_use = 'fournisseur'; $subdir = '/commande'; }
 				elseif ($element === 'invoice_supplier') { $element_to_use = 'fournisseur'; $sub_element_to_use = 'facture'; /* $subdir is defined in the next loop */ }
 				elseif ($element === 'shipping') {$element_to_use = 'expedition'; $subdir = '/sending';}

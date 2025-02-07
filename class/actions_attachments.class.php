@@ -106,7 +106,7 @@ class ActionsAttachments extends \attachments\RetroCompatCommonHookActions
 	 */
 	function doActions($parameters, &$object, &$action, $hookmanager)
 	{
-		global $conf, $user;
+		global $conf, $user, $langs;
 
 		$contexts = explode(':',$parameters['context']);
 		if (in_array('ticketcard',$contexts)) {
@@ -300,6 +300,11 @@ class ActionsAttachments extends \attachments\RetroCompatCommonHookActions
 				$this->formconfirm = getFormConfirmAttachments($this, $this->TFilePathByTitleKey, GETPOST('trackid', 'none'));
 				$action = 'presend';
 				$_POST['addfile'] = ''; // Permet de bi-passer un setEventMessage de Dolibarr
+
+				if (empty($this->TFilePathByTitleKey)) {
+					$langs->load("attachments@attachments");
+					setEventMessage($langs->trans('ATTACHMENTS_NO_FILE_TO_LINK'), 'warnings');
+				}
 			}
 			// Gestion de l'envoi des données provenant du formconfirm
 			elseif ($action === 'confirm_attachments_send')
@@ -399,36 +404,33 @@ class ActionsAttachments extends \attachments\RetroCompatCommonHookActions
 
 		if (in_array($this->action, array('presend', 'send', 'confirm_sendmassmail')) || preg_match('/^presend/', $this->action))
 		{
-			if (!empty($this->TFilePathByTitleKey))
+			print '
+				<script type="text/javascript">
+					$(function() {
+						let attachments_button = $("<span class=\'fa fa-paperclip\' onclick=\'attachments_send()\'></span>");
+						$("#addfile").after(attachments_button);
+
+						attachments_send = function()
+						{
+							$("#action").val("attachments_send"); // Maj de "action" pour interception côté "doActions"
+							$("#addfile").click(); // Simulation du clique sur le bouton "Joindre ce fichier"
+						}
+
+						if (window.location.hash === "")
+						{
+							let attachments_top = document.getElementById("formmail").offsetTop; //Getting Y of target element
+							window.scrollTo(0, attachments_top);
+						}
+
+					});
+				</script>
+			';
+
+			if (!empty($this->formconfirm)) print $this->formconfirm;
+
+			if (!empty($this->modelmailselected))
 			{
-				print '
-					<script type="text/javascript">
-						$(function() {
-							let attachments_button = $("<span class=\'fa fa-paperclip\' onclick=\'attachments_send()\'></span>");
-							$("#addfile").after(attachments_button);
-
-							attachments_send = function()
-							{
-								$("#action").val("attachments_send"); // Maj de "action" pour interception côté "doActions"
-								$("#addfile").click(); // Simulation du clique sur le bouton "Joindre ce fichier"
-							}
-
-							if (window.location.hash === "")
-							{
-								let attachments_top = document.getElementById("formmail").offsetTop; //Getting Y of target element
-								window.scrollTo(0, attachments_top);
-							}
-
-						});
-					</script>
-				';
-
-				if (!empty($this->formconfirm)) print $this->formconfirm;
-
-				if (!empty($this->modelmailselected))
-				{
-					$object->param['models_id'] = $this->modelmailselected;
-				}
+				$object->param['models_id'] = $this->modelmailselected;
 			}
 		}
 

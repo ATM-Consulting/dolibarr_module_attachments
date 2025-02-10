@@ -32,3 +32,4 @@ AttachmentsShipping=Expedition
 
 AttachmentsFiltered=Nombre d'éléments correspondant à votre recherche
 AttachmentsSelectedOnTotalAvailable=Nombre d'éléments sélectionné sur le total disponible
+ATTACHMENTS_NO_FILE_TO_LINK = Aucun fichier à joindre

@@ -33,3 +33,4 @@ AttachmentsTitleTask = Task
 
 AttachmentsFiltered = Elements corresponding to your search term
 AttachmentsSelectedOnTotalAvailable = Number of selected elements on total available
+ATTACHMENTS_NO_FILE_TO_LINK = No file to link

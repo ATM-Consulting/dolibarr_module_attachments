@@ -474,7 +474,7 @@ class ActionsAttachments extends \attachments\RetroCompatCommonHookActions
 
 				if (is_dir($fullname))
 				{
-					$this->nyandog($key, $fullname, $file);
+					$this->nyandog($key, $fullname.'/', $file);
 				}
 				elseif (is_file($fullname))
 				{

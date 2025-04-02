@@ -299,6 +299,10 @@ class ActionsAttachments extends \attachments\RetroCompatCommonHookActions
 				dol_include_once('attachments/lib/attachments.lib.php');
 				$this->formconfirm = getFormConfirmAttachments($this, $this->TFilePathByTitleKey, GETPOST('trackid', 'none'));
 				$action = 'presend';
+				// on a besoin de faire persister l'action presend, il est possible que l'action
+				// soit écraser par d'autre module qui récupére l'action en post et redéfinisse $action après modification
+				$_POST['action'] = 'presend';
+				$_GET['action'] = 'presend';
 				$_POST['addfile'] = ''; // Permet de bi-passer un setEventMessage de Dolibarr
 
 				if (empty($this->TFilePathByTitleKey)) {
@@ -366,6 +370,10 @@ class ActionsAttachments extends \attachments\RetroCompatCommonHookActions
 				}
 
 				$action = 'presend';
+				// on a besoin de faire persister l'action presend, il est possible que l'action
+				// soit écraser par d'autre module qui récupére l'action en post et redéfinisse $action après modification
+				$_POST['action'] = 'presend';
+				$_GET['action'] = 'presend';
 				$_GET['addfile'] = ''; // Permet de bi-passer un setEventMessage de Dolibarr
 			}
 
@@ -409,7 +417,6 @@ class ActionsAttachments extends \attachments\RetroCompatCommonHookActions
 					$(function() {
 						let attachments_button = $("<span class=\'fa fa-paperclip\' onclick=\'attachments_send()\'></span>");
 						$("#addfile").after(attachments_button);
-
 						attachments_send = function()
 						{
 							$("#action").val("attachments_send"); // Maj de "action" pour interception côté "doActions"

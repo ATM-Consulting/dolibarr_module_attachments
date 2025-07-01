@@ -245,8 +245,8 @@ function getFormConfirmAttachments($actionattachments, $TFilePathByTitleKey, $tr
         , $formquestion
         , 0
         , 1
-        , 'auto'
-        , '800'
+        , 400
+        , 800
     );
 
     $formconfirm.= '

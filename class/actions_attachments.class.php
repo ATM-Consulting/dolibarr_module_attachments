@@ -30,7 +30,7 @@ require_once __DIR__.'/../backport/v19/core/class/commonhookactions.class.php';
 class ActionsAttachments extends \attachments\RetroCompatCommonHookActions
 {
 	/**
-	 * @var array Hook results. Propagated to $hookmanager->resArray for later reuse
+	 * @var array Hook results. Propagated to $this->results for later reuse
 	 */
 	public $results = array();
 
@@ -277,13 +277,13 @@ class ActionsAttachments extends \attachments\RetroCompatCommonHookActions
 			$reshook = $hookmanager->executeHooks('attachMoreFiles', $parameters, $this->current_object, $action); // Note that $action and $object may have been modified by some hooks
 			if (empty($reshook))
 			{
-				if (is_array($hookmanager->resArray) && count($hookmanager->resArray))
+				if (is_array($this->results) && count($this->results))
 				{
 					// TODO voir si "array_merge_recursive" correspond au comportement attendu
-					$this->TFilePathByTitleKey = array_merge_recursive($this->TFilePathByTitleKey, $hookmanager->resArray);
+					$this->TFilePathByTitleKey = array_merge_recursive($this->TFilePathByTitleKey, $this->results);
 				}
 			}
-			elseif ($reshook > 0) $this->TFilePathByTitleKey = $hookmanager->resArray;
+			elseif ($reshook > 0) $this->TFilePathByTitleKey = $this->results;
 
 
 			$param = array('TTileKeyRank' => $this->TTileKeyRank);

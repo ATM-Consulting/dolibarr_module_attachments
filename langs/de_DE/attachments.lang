@@ -1,0 +1,36 @@
+Module104902Name = E-Mail-Anhänge
+Module104902Desc = Ermöglicht das einfache Hinzufügen von Anhängen beim Versenden von E-Mails
+
+ATMAbout = Dieses Modul wurde von <a href="http://www.atm-consulting.fr" target="_blank">ATM Consulting</a> entwickelt<br>Die Dokumentation finden Sie in unserem <a href="http://wiki.atm-consulting.fr/index.php/Accueil" target="_blank">Wiki</a><br><br>Bei technischen Fragen oder Feedback kontaktieren Sie uns unter <a href="mailto:support@atm-consulting.fr">support@atm-consulting.fr</a><br><br>Bei geschäftlichen Fragen kontaktieren Sie uns unter <a href="mailto:contact@atm-consulting.fr">contact@atm-consulting.fr</a> oder +33 9 77 19 50 70<br><br>Finden Sie unsere anderen Module auf <a href="http://www.dolistore.com/search.php?orderby=position&orderway=desc&search_query=atm&submit_search=Rechercher" target="_blank">Dolistore</a>
+
+AttachmentsSetup = Konfiguration des E-Mail-Anhänge-Moduls
+AttachmentsAbout = Über das E-Mail-Anhänge-Modul
+
+Attachments=E-Mail-Anhänge
+AbricotNeedUpdate=Das Abricot-Modul muss aktualisiert werden
+
+# SETUP
+ATTACHMENTS_INCLUDE_PRODUCT_LINES=Suche in Dateien von Produkten/Dienstleistungen des aktuellen Dokuments aktivieren
+ATTACHMENTS_INCLUDE_OBJECT_LINKED=Suche in Dateien von verknüpften Elementen des aktuellen Dokuments aktivieren
+ATTACHMENTS_ECM_SCANDIR=Suche im folgenden Verzeichnis aktivieren
+
+# FORMCONFIRM
+ConfirmCancelAttachmentsTitle=Dateien zum Anhängen an Ihre E-Mail
+ConfirmCancelAttachmentsBody=Bitte wählen Sie die Dateien aus, die Sie Ihrer E-Mail anhängen möchten
+AttachmentsTitleProductOrService=Produkte / Dienstleistungen des aktuellen Dokuments
+AttachmentsTitlePropal=Geschäftsvorschlag
+AttachmentsTitleCommande=Kundenauftrag
+AttachmentsTitleFacture=Kundenrechnung
+AttachmentsTitleContrat=Vertrag
+AttachmentsTitlePropalFournisseur=Lieferantenanfrage
+AttachmentsTitleCommandeFournisseur=Lieferantenbestellung
+AttachmentsTitleFactureFournisseur=Lieferantenrechnung
+AttachmentsTitleFicheInter=Intervention
+AttachmentsSociete=Unternehmen
+AttachmentsTitleEcm=Dokumente (DMS)
+AttachmentsTitleTask=Aufgaben
+AttachmentsShipping=Versand
+
+AttachmentsFiltered=Anzahl der Elemente, die Ihrer Suche entsprechen
+AttachmentsSelectedOnTotalAvailable=Anzahl der ausgewählten Elemente von insgesamt verfügbaren
+ATTACHMENTS_NO_FILE_TO_LINK = Keine Dateien zum Anhängen

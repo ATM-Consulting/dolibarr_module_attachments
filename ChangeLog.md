@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 
 ## Release 1.5
+- FIX DA026978 : Attachments of third party not available even when conf `ATTACHMENTS_INCLUDE_OBJECT_LINKED` was enabled - *29/08/2025* - 1.5.6
 - FIX : Warning Constant INC_FROM_DOLIBARR already defined - *18/08/2025* - 1.5.5
 - FIX : Compat v22 - *02/07/2025* - 1.5.4
 - FIX : $action == "presend" écrasé par d'autres module lors de l'envoi en getpost - *02/04/2025* - 1.5.3

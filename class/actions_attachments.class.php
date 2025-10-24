@@ -217,7 +217,10 @@ class ActionsAttachments extends \attachments\RetroCompatCommonHookActions
 
 					// Documents
 					$linkObjRef = dol_sanitizeFileName($linkedObject->ref);
-					if ($element == 'societe') $linkObjRefKey = $linkedObject->nom;
+					if ($element == 'societe') {
+						$linkObjRefKey = $linkedObject->nom;
+						$linkObjRef = $linkedObject->id;
+					}
 					else $linkObjRefKey = $linkObjRef;
 
 					if ($element === 'invoice_supplier') $subdir = '/'.get_exdir($linkedObject->id, 2, 0, 0, $linkedObject, 'invoice_supplier');

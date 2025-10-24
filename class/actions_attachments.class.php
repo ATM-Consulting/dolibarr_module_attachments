@@ -275,15 +275,16 @@ class ActionsAttachments extends \attachments\RetroCompatCommonHookActions
 			// Surcharge pour les modules externes
 			$parameters['TFilePathByTitleKey'] = $this->TFilePathByTitleKey;
 			$reshook = $hookmanager->executeHooks('attachMoreFiles', $parameters, $this->current_object, $action); // Note that $action and $object may have been modified by some hooks
+			$moreFiles = count($this->results) > 0 ? $this->results : $hookmanager->resArray;
 			if (empty($reshook))
 			{
-				if (is_array($this->results) && count($this->results))
+				if (is_array($moreFiles) && count($moreFiles))
 				{
 					// TODO voir si "array_merge_recursive" correspond au comportement attendu
-					$this->TFilePathByTitleKey = array_merge_recursive($this->TFilePathByTitleKey, $this->results);
+					$this->TFilePathByTitleKey = array_merge_recursive($this->TFilePathByTitleKey, $moreFiles);
 				}
 			}
-			elseif ($reshook > 0) $this->TFilePathByTitleKey = $this->results;
+			elseif ($reshook > 0) $this->TFilePathByTitleKey = $moreFiles;
 
 
 			$param = array('TTileKeyRank' => $this->TTileKeyRank);

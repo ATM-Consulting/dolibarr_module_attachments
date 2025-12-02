@@ -38,11 +38,11 @@ class modAttachments extends DolibarrModules
 	 *
 	 *   @param      DoliDB		$db      Database handler
 	 */
-	function __construct($db)
+	public function __construct($db)
 	{
-        global $langs,$conf;
+		global $langs,$conf;
 
-        $this->db = $db;
+		$this->db = $db;
 
 		$this->editor_name = 'ATM Consulting';
 		$this->editor_url = 'https://www.atm-consulting.fr';
@@ -57,7 +57,7 @@ class modAttachments extends DolibarrModules
 		// It is used to group modules in module setup page
 		$this->family = 'ATM Consulting';
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->name = preg_replace('/^mod/i','',get_class($this));
+		$this->name = preg_replace('/^mod/i', '', get_class($this));
 		// Module description, used if translation string 'ModuleXXXDesc' not found (where XXX is value of numeric property 'numero' of module)
 		$this->description = "Description of module Attachments";
 		// Possible values for version are: 'development', 'experimental', 'dolibarr' or version
@@ -83,12 +83,12 @@ class modAttachments extends DolibarrModules
 		// for specific css file (eg: /attachments/css/attachments.css.php)
 		$this->module_parts = array(
 		   'hooks' => array(
-		       'globalcard'
-		       , 'formmail'
-		       , 'agefodd_send_docs'
-		       , 'agefoddsessiondocumenttrainee'
-           )
-        );
+			   'globalcard'
+			   , 'formmail'
+			   , 'agefodd_send_docs'
+			   , 'agefoddsessiondocumenttrainee'
+		   )
+		);
 
 		// Data directories to create when module is enabled.
 		// Example: this->dirs = array("/attachments/temp");
@@ -114,9 +114,9 @@ class modAttachments extends DolibarrModules
 		$this->const = array();
 
 		// Array to add new pages in new tabs
-		// Example: $this->tabs = array('objecttype:+tabname1:Title1:attachments@attachments:$user->rights->attachments->read:/attachments/mynewtab1.php?id=__ID__',  	// To add a new tab identified by code tabname1
-        //                              'objecttype:+tabname2:Title2:attachments@attachments:$user->rights->othermodule->read:/attachments/mynewtab2.php?id=__ID__',  	// To add another new tab identified by code tabname2
-        //                              'objecttype:-tabname:NU:conditiontoremove');                                                     						// To remove an existing tab identified by code tabname
+		// Example: $this->tabs = array('objecttype:+tabname1:Title1:attachments@attachments:$user->hasRight('attachments', 'read'):/attachments/mynewtab1.php?id=__ID__',  	// To add a new tab identified by code tabname1
+		//                              'objecttype:+tabname2:Title2:attachments@attachments:$user->hasRight('othermodule', 'read'):/attachments/mynewtab2.php?id=__ID__',  	// To add another new tab identified by code tabname2
+		//                              'objecttype:-tabname:NU:conditiontoremove');                                                     						// To remove an existing tab identified by code tabname
 		// where objecttype can be
 		// 'categories_x'	  to add a tab in category view (replace 'x' by type of category (0=product, 1=supplier, 2=customer, 3=member)
 		// 'contact'          to add a tab in contact view
@@ -137,20 +137,19 @@ class modAttachments extends DolibarrModules
 		// 'stock'            to add a tab in stock view
 		// 'thirdparty'       to add a tab in third party view
 		// 'user'             to add a tab in user view
-        $this->tabs = array();
+		$this->tabs = array();
 
-        // Dictionaries
-	    if (!isModEnabled('attachments'))
-        {
-        	$conf->attachments=new stdClass();
-        	$conf->attachments->enabled=0;
-        }
+		// Dictionaries
+		if (!isModEnabled('attachments')) {
+			$conf->attachments=new stdClass();
+			$conf->attachments->enabled=0;
+		}
 		$this->dictionaries=array();
 
 
-        // Boxes
+		// Boxes
 		// Add here list of php file(s) stored in core/boxes that contains class to show a box.
-        $this->boxes = array();			// List of boxes
+		$this->boxes = array();			// List of boxes
 		// Example:
 		//$this->boxes=array(array(0=>array('file'=>'myboxa.php','note'=>'','enabledbydefaulton'=>'Home'),1=>array('file'=>'myboxb.php','note'=>''),2=>array('file'=>'myboxc.php','note'=>'')););
 
@@ -175,10 +174,10 @@ class modAttachments extends DolibarrModules
 	 *		The init function add constants, boxes, permissions and menus (defined in constructor) into Dolibarr database.
 	 *		It also creates data directories
 	 *
-     *      @param      string	$options    Options when enabling module ('', 'noboxes')
+	 *      @param      string	$options    Options when enabling module ('', 'noboxes')
 	 *      @return     int             	1 if OK, 0 if KO
 	 */
-	function init($options='')
+	public function init($options = '')
 	{
 		$sql = array();
 
@@ -198,14 +197,13 @@ class modAttachments extends DolibarrModules
 	 *      Remove from database constants, boxes and permissions from Dolibarr database.
 	 *		Data directories are not deleted
 	 *
-     *      @param      string	$options    Options when enabling module ('', 'noboxes')
+	 *      @param      string	$options    Options when enabling module ('', 'noboxes')
 	 *      @return     int             	1 if OK, 0 if KO
 	 */
-	function remove($options='')
+	public function remove($options = '')
 	{
 		$sql = array();
 
 		return $this->_remove($sql, $options);
 	}
-
 }

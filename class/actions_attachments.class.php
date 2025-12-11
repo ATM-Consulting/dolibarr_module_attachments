@@ -130,7 +130,7 @@ class ActionsAttachments extends \attachments\RetroCompatCommonHookActions
 
 			$this->current_object = $object;
 			if (getDolGlobalString('ATTACHMENTS_INCLUDE_OBJECT_LINKED')) {
-				// InfraS add begin
+				// InfraS change begin
 				if (getDolGlobalString('ATTACHMENTS_INCLUDE_PROJECT_LINKED') && !empty($this->current_object->fk_project)) {
 					$sql	= 'INSERT INTO '.MAIN_DB_PREFIX.'element_element (fk_source, sourcetype, fk_target, targettype) VALUES ('.$this->current_object->id.', "'.$this->current_object->element.'", '.$this->current_object->fk_project.', "project")';
 					$resql	= $this->db->query($sql);
@@ -138,7 +138,6 @@ class ActionsAttachments extends \attachments\RetroCompatCommonHookActions
 				}
 				// InfraS add end
 				$this->current_object->fetchObjectLinked();
-				// InfraS add begin
 				if (getDolGlobalString('ATTACHMENTS_INCLUDE_PROJECT_LINKED') && !empty($this->current_object->fk_project)) {
 					$sql	= 'DELETE FROM '.MAIN_DB_PREFIX.'element_element WHERE fk_source = '.$this->current_object->id.' AND sourcetype LIKE "'.$this->current_object->element.'" AND fk_target = '.$this->current_object->fk_project.' AND targettype LIKE "project"';
 					$resql	= $this->db->query($sql);

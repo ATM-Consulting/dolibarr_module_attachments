@@ -11,6 +11,7 @@ AbricotNeedUpdate=Le module abricot doit être mis à jour
 # SETUP
 ATTACHMENTS_INCLUDE_PRODUCT_LINES=Activer la recherche dans les fichiers provenant des produits/services du document courant
 ATTACHMENTS_INCLUDE_OBJECT_LINKED=Activer la recherche dans les fichiers provenant des éléments liés au document courant
+ATTACHMENTS_INCLUDE_PROJECT_LINKED=Activer la recherche dans les fichiers provenant du projet lié au document courant (nécessite l'activation de l'option précédente)
 ATTACHMENTS_ECM_SCANDIR=Activer la recherche dans le répertoire suivant
 
 # FORMCONFIRM
@@ -27,6 +28,7 @@ AttachmentsTitleFactureFournisseur=Facture fournisseur
 AttachmentsTitleFicheInter=Intervention
 AttachmentsSociete=Société
 AttachmentsTitleEcm=Documents (GED)
+AttachmentsTitleProject=Projet
 AttachmentsTitleTask=Tâches
 AttachmentsShipping=Expedition
 

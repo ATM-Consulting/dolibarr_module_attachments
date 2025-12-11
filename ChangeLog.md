@@ -6,11 +6,12 @@ All notable changes to this project will be documented in this file.
 
 
 ## Release 1.5
+- FIX : Fix the linked object "thirdparty" so that it appears in the file to be attached to invoices.
 - FIX : DA027218 - Fixing hooks for Agefodd compatibility - *24/10/2025* - 1.5.7
 - FIX DA026978 : Attachments of third party not available even when conf `ATTACHMENTS_INCLUDE_OBJECT_LINKED` was enabled - *29/08/2025* - 1.5.6
 - FIX : Warning Constant INC_FROM_DOLIBARR already defined - *18/08/2025* - 1.5.5
 - FIX : Compat v22 - *02/07/2025* - 1.5.4
-- FIX : $action == "presend" Ã©crasÃ© par d'autres module lors de l'envoi en getpost - *02/04/2025* - 1.5.3
+- FIX : $action == "presend" écrasé par d'autres module lors de l'envoi en getpost - *02/04/2025* - 1.5.3
 - FIX : Displays the button to attach a file in all cases, with a warning message if no file is available - *07/02/2025* - 1.5.2
 - FIX : Compat v21 - *17/12/2024* - 1.5.1
         Suppression retropcompat <=V15
@@ -28,7 +29,7 @@ All notable changes to this project will be documented in this file.
 - FIX : Compat mass action  *20/06/2023* 1.3.4
 - FIX : Compat V17  *20/01/2023* 1.3.3
 - FIX : Module icon  *25/07/2022* 1.3.2
-- FIX : Permet de ne pas avoir l'attachement automatique de la PJ sur les modÃ¨les n'en possÃ©dant pas *25/05/2022* 1.3.1
+- FIX : Permet de ne pas avoir l'attachement automatique de la PJ sur les modèles n'en possédant pas *25/05/2022* 1.3.1
 - NEW : Ajout de la class TechATM pour l'affichage de la page "A propos" *11/05/2022* 1.3.0
 
 ## Release 1.2

@@ -113,6 +113,7 @@ setup_print_title("Parameters");
 // Example with a yes / no select
 setup_print_on_off('ATTACHMENTS_INCLUDE_PRODUCT_LINES');
 setup_print_on_off('ATTACHMENTS_INCLUDE_OBJECT_LINKED');
+setup_print_on_off('ATTACHMENTS_INCLUDE_PROJECT_LINKED');	// InfraS add
 
 if (isModEnabled('ecm'))
 {

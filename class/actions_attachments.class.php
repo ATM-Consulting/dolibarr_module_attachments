@@ -72,7 +72,7 @@ class ActionsAttachments extends \attachments\RetroCompatCommonHookActions
 		, 'societe' => 'AttachmentsSociete'
 		, 'ecm' => 'AttachmentsTitleEcm'
 		, 'project_task' => 'AttachmentsTitleTask'
-	, 'shipping' => 'AttachmentsShipping'
+		, 'shipping' => 'AttachmentsShipping'
 	);
 
 	public $TFilePathByTitleKey = array();
@@ -237,17 +237,28 @@ class ActionsAttachments extends \attachments\RetroCompatCommonHookActions
 					else{
 						continue;
 					}
-
+					// Special case for products if old path for photos is used
 					if ($element == 'product' && getDolGlobalString('PRODUCT_USE_OLD_PATH_FOR_PHOTO'))
 					{
 						$pdir = get_exdir($linkedObject->id, 2, 0, 0, $linkedObject, 'product') . $linkedObject->id ."/photos/";
 						$filedir = $conf->product->dir_output.'/'.$pdir;
 					}
 
+					// Scan directory
+					// On exclu les fichiers .meta et les preview png
 					$file_list=dol_dir_list($filedir, 'files', 0, '', '(\.meta|_preview.*.*\.png)$', 'date', SORT_DESC);
 					if (!empty($file_list))
 					{
-						$key = $this->TTileKeyByElement[$element];
+						if (!empty($this->TTileKeyByElement[$element]))
+						{
+							$key = $this->TTileKeyByElement[$element];
+						}else{
+							if(strpos($element, '_') !== false){
+								$element = explode('_', $element);
+								$element = $element[1];
+							}
+						}
+
 						foreach ($file_list as $file_info)
 						{
 							$fullname_md5 = md5($file_info['fullname']);

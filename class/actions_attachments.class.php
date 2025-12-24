@@ -249,14 +249,15 @@ class ActionsAttachments extends \attachments\RetroCompatCommonHookActions
 					$file_list=dol_dir_list($filedir, 'files', 0, '', '(\.meta|_preview.*.*\.png)$', 'date', SORT_DESC);
 					if (!empty($file_list))
 					{
-						if (!empty($this->TTileKeyByElement[$element]))
-						{
-							$key = $this->TTileKeyByElement[$element];
-						}else{
-							if(strpos($element, '_') !== false){
+						if (empty($this->TTileKeyByElement[$element])){
+							if(strpos($element, '_') == false){
+								$key = $element;
+							}else{
 								$element = explode('_', $element);
-								$element = $element[1];
+								$key = $element[1];
 							}
+						}else{
+							$key = $this->TTileKeyByElement[$element];
 						}
 
 						foreach ($file_list as $file_info)

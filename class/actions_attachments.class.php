@@ -1,6 +1,7 @@
 <?php
 /* <one line to give the program's name and a brief idea of what it does.>
  * Copyright (C) 2015 ATM Consulting <support@atm-consulting.fr>
+ * Copyright (C) 2025 Anthony Berton <anthony.berton@bb2a.fr>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -259,7 +260,6 @@ class ActionsAttachments extends \attachments\RetroCompatCommonHookActions
 						}else{
 							$key = $this->TTileKeyByElement[$element];
 						}
-
 						foreach ($file_list as $file_info)
 						{
 							$fullname_md5 = md5($file_info['fullname']);

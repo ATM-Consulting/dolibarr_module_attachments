@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 
 ## Release 1.5
+- FIX : Attached files societe for id - *12/01/2025* -1.5.9
 - FIX : Compat V23 - *02/12/2025* -1.5.8
 - FIX : DA027218 - Fixing hooks for Agefodd compatibility - *24/10/2025* - 1.5.7
 - FIX DA026978 : Attachments of third party not available even when conf `ATTACHMENTS_INCLUDE_OBJECT_LINKED` was enabled - *29/08/2025* - 1.5.6

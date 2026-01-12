@@ -128,8 +128,10 @@ class ActionsAttachments extends \attachments\RetroCompatCommonHookActions
 
 			if (getDolGlobalString('ATTACHMENTS_INCLUDE_OBJECT_LINKED')) {
 				$this->current_object->fetchObjectLinked();
-				if(!empty($this->current_object->fk_soc)) $fk_soc = $this->current_object->fk_soc ?? 0;
+				if (!empty($this->current_object->fk_soc)) $fk_soc = $this->current_object->fk_soc ?? 0;
 				else $fk_soc = $this->current_object->socid ?? 0;
+				//  When the company is not present in $object
+				if (is_null($this->current_object->thirdparty)) $this->current_object->fetch_thirdparty();
 				$this->current_object->linkedObjects['societe'][$fk_soc] = $this->current_object->thirdparty;
 			}
 

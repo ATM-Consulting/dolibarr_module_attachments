@@ -249,7 +249,6 @@ class ActionsAttachments extends \attachments\RetroCompatCommonHookActions
 					if (!empty($file_list))
 					{
 						$key = $this->TTileKeyByElement[$element];
-						var_dump($key);
 						foreach ($file_list as $file_info)
 						{
 							$fullname_md5 = md5($file_info['fullname']);

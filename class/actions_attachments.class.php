@@ -124,8 +124,8 @@ class ActionsAttachments extends \attachments\RetroCompatCommonHookActions
 			require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 
 			$hookmanager->initHooks(array('attachmentsform'));
-
 			$this->current_object = $object;
+
 			if (getDolGlobalString('ATTACHMENTS_INCLUDE_OBJECT_LINKED')) {
 				$this->current_object->fetchObjectLinked();
 				if(!empty($this->current_object->fk_soc)) $fk_soc = $this->current_object->fk_soc ?? 0;
@@ -218,8 +218,7 @@ class ActionsAttachments extends \attachments\RetroCompatCommonHookActions
 					// Documents
 					$linkObjRef = dol_sanitizeFileName($linkedObject->ref);
 					if ($element == 'societe') {
-						$linkObjRefKey = $linkedObject->nom;
-						$linkObjRef = $linkedObject->id;
+						$linkObjRefKey = $linkObjRef = $linkedObject->id;
 					}
 					else $linkObjRefKey = $linkObjRef;
 

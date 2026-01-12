@@ -214,12 +214,10 @@ class ActionsAttachments extends \attachments\RetroCompatCommonHookActions
 					if(empty($linkedObject)){
 						continue;
 					}
-
 					// Documents
 					$linkObjRef = dol_sanitizeFileName($linkedObject->ref);
-					if ($element == 'societe') $linkObjRefKey = $linkedObject->nom;
+					if ($element == 'societe') $linkObjRefKey = $linkObjRef = $linkedObject->id;
 					else $linkObjRefKey = $linkObjRef;
-
 					if ($element === 'invoice_supplier') $subdir = '/'.get_exdir($linkedObject->id, 2, 0, 0, $linkedObject, 'invoice_supplier');
 
 					// TODO $element doit être faussé en fonction du type de l'objet

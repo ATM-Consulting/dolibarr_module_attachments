@@ -55,7 +55,8 @@ class ActionsAttachments extends \attachments\RetroCompatCommonHookActions
 		, 'AttachmentsTitleFactureFournisseur' => 35
 		, 'AttachmentsTitleFicheInter' => 40
 		, 'AttachmentsSociete' => 50
-		, 'AttachmentsTitleTask' =>60
+		, 'AttachmentsTitleProject' => 55
+		, 'AttachmentsTitleTask' => 60
 		, 'AttachmentsTitleEcm' => 500
 	);
 
@@ -71,6 +72,7 @@ class ActionsAttachments extends \attachments\RetroCompatCommonHookActions
 		, 'fichinter' => 'AttachmentsTitleFicheInter'
 		, 'societe' => 'AttachmentsSociete'
 		, 'ecm' => 'AttachmentsTitleEcm'
+		, 'project' => 'AttachmentsTitleProject'
 		, 'project_task' => 'AttachmentsTitleTask'
 	, 'shipping' => 'AttachmentsShipping'
 	);
@@ -127,12 +129,22 @@ class ActionsAttachments extends \attachments\RetroCompatCommonHookActions
 			$this->current_object = $object;
 
 			if (getDolGlobalString('ATTACHMENTS_INCLUDE_OBJECT_LINKED')) {
+				if (getDolGlobalString('ATTACHMENTS_INCLUDE_PROJECT_LINKED') && !empty($this->current_object->fk_project)) {
+					$sql	= 'INSERT INTO '.MAIN_DB_PREFIX.'element_element (fk_source, sourcetype, fk_target, targettype) VALUES ('.$this->current_object->id.', "'.$this->current_object->element.'", '.$this->current_object->fk_project.', "project")';
+					$resql	= $this->db->query($sql);
+					$this->db->free($resql);
+				}
 				$this->current_object->fetchObjectLinked();
 				if (!empty($this->current_object->fk_soc)) $fk_soc = $this->current_object->fk_soc ?? 0;
 				else $fk_soc = $this->current_object->socid ?? 0;
 				//  When the company is not present in $object
 				if (is_null($this->current_object->thirdparty)) $this->current_object->fetch_thirdparty();
 				$this->current_object->linkedObjects['societe'][$fk_soc] = $this->current_object->thirdparty;
+				if (getDolGlobalString('ATTACHMENTS_INCLUDE_PROJECT_LINKED') && !empty($this->current_object->fk_project)) {
+					$sql	= 'DELETE FROM '.MAIN_DB_PREFIX.'element_element WHERE fk_source = '.$this->current_object->id.' AND sourcetype LIKE "'.$this->current_object->element.'" AND fk_target = '.$this->current_object->fk_project.' AND targettype LIKE "project"';
+					$resql	= $this->db->query($sql);
+					$this->db->free($resql);
+				}
 			}
 
 			if (empty($this->current_object->linkedObjects[$this->current_object->element])) $this->current_object->linkedObjects[$this->current_object->element] = array();
@@ -197,6 +209,7 @@ class ActionsAttachments extends \attachments\RetroCompatCommonHookActions
 				$sub_element_to_use = '';
 				$subdir = '';
 				if ($element === 'fichinter') $element_to_use = 'ficheinter';
+				elseif ($element === 'project')	$element_to_use = 'projet';
 				elseif ($element === 'order_supplier') { $element_to_use = 'fournisseur'; $subdir = '/commande'; }
 				elseif ($element === 'invoice_supplier') { $element_to_use = 'fournisseur'; $sub_element_to_use = 'facture'; /* $subdir is defined in the next loop */ }
 				elseif ($element === 'shipping') {$element_to_use = 'expedition'; $subdir = '/sending';}
@@ -486,7 +499,7 @@ class ActionsAttachments extends \attachments\RetroCompatCommonHookActions
 
 				if (is_dir($fullname))
 				{
-					$this->nyandog($key, $fullname, $file);
+					$this->nyandog($key, $fullname.(str_ends_with($fullname, '/') ? '' : '/'), $file);
 				}
 				elseif (is_file($fullname))
 				{
